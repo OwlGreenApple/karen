@@ -1,0 +1,33 @@
+services:
+  karen:
+    build: .
+    container_name: karen-bot
+    restart: unless-stopped
+
+    # Mount your real .env (overrides the .env.example baked in)
+    env_file:
+      - .env
+
+    volumes:
+      # Persist SQLite database and logs between restarts
+      - ./data:/app/data
+      - ./logs:/app/logs
+
+    ports:
+      - "${DASHBOARD_PORT:-8000}:8000"
+
+    # Health check — dashboard must respond within 30s of startup
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/status')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"

@@ -1,0 +1,17 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+data/
+logs/
+karen/dashboard/frontend/node_modules/
+karen/dashboard/static/
+tests/
+*.md
+.git/
+.gitignore
+docker-compose.yml

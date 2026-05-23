@@ -1,0 +1,15 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+data/
+logs/
+karen/dashboard/static/
+karen/dashboard/frontend/node_modules/
+*.egg-info/
+dist/
+build/

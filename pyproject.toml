@@ -1,0 +1,14 @@
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+exclude = ["karen/dashboard/frontend", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["ccxt.*", "pandas_ta.*", "binance.*", "telegram.*", "loguru.*", "watchdog.*"]
+ignore_missing_imports = true
