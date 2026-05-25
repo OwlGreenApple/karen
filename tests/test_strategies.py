@@ -11,6 +11,7 @@ from karen.strategies.trend_following import TrendFollowingStrategy, _swing_sl
 from tests.conftest import (
     make_ind1h,
     make_ind15m,
+    make_ind5m_mr,
     make_ohlcv,
     make_ranging_ohlcv,
     make_trending_ohlcv,
@@ -19,12 +20,12 @@ from tests.conftest import (
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
 
-def make_mr(settings, ind_15m=None, ind_1h=None):
+def make_mr(settings, ind_5m=None, ind_15m=None):
     """Build MeanReversionStrategy with injected indicator functions."""
     return MeanReversionStrategy(
         settings,
-        compute_15m_fn=lambda df, s: ind_15m if ind_15m is not None else make_ind15m(),
-        compute_1h_fn=lambda df, s: ind_1h if ind_1h is not None else make_ind1h(),
+        compute_signal_fn=lambda df, s: ind_5m if ind_5m is not None else make_ind5m_mr(),
+        compute_filter_fn=lambda df, s: ind_15m if ind_15m is not None else make_ind15m(),
     )
 
 
@@ -77,8 +78,8 @@ async def test_mr_returns_none_if_too_few_1h_rows(default_settings):
 @pytest.mark.asyncio
 async def test_mr_blocks_when_adx_too_high(default_settings):
     """ADX ≥ mr_adx_max (trending) → no signal."""
-    ind_1h = make_ind1h(adx=25.0)  # above the 20.0 threshold
-    strat = make_mr(default_settings, ind_1h=ind_1h)
+    ind_15m = make_ind15m(adx=30.0)  # above the 25.0 threshold
+    strat = make_mr(default_settings, ind_15m=ind_15m)
     signal = await strat.evaluate("BTCUSDT", dummy_df(), dummy_df())
     assert signal is None
 
@@ -88,35 +89,20 @@ async def test_mr_passes_when_adx_is_low(default_settings):
     """ADX < mr_adx_max and other conditions met → signal allowed."""
     close = 40_000.0
     lower_bb = 39_500.0
-    ind_1h = make_ind1h(adx=10.0, atr=300.0, close=close)  # ranging
-    ind_15m = make_ind15m(
+    ind_15m = make_ind15m(adx=10.0)  # ranging filter
+    ind_5m = make_ind5m_mr(
         close=close + 100,            # current close just inside lower BB
         bb_lower=lower_bb,
         bb_middle=40_500.0,
         bb_upper=41_000.0,
-        rsi=25.0,                      # oversold
-        atr=300.0,
+        rsi=32.0,                      # oversold (< 35 threshold)
+        atr=80.0,
         prev_low=lower_bb - 50,        # prev candle touched below lower BB
     )
-    strat = make_mr(default_settings, ind_15m=ind_15m, ind_1h=ind_1h)
+    strat = make_mr(default_settings, ind_5m=ind_5m, ind_15m=ind_15m)
     signal = await strat.evaluate("BTCUSDT", dummy_df(), dummy_df())
     assert signal is not None
     assert signal.side == "long"
-
-
-# ─── MeanReversion: ATR/price filter ─────────────────────────────────────────
-
-
-@pytest.mark.asyncio
-async def test_mr_blocks_when_atr_too_low(default_settings):
-    """ATR/price < 0.3% → no signal."""
-    close = 40_000.0
-    # ATR = 100 → 100/40000 = 0.25%, below 0.3%
-    ind_1h = make_ind1h(adx=10.0, atr=100.0, close=close)
-    ind_15m = make_ind15m(close=close, rsi=25.0, atr=100.0, prev_low=39_400.0, bb_lower=39_500.0)
-    strat = make_mr(default_settings, ind_15m=ind_15m, ind_1h=ind_1h)
-    signal = await strat.evaluate("BTCUSDT", dummy_df(), dummy_df())
-    assert signal is None
 
 
 # ─── MeanReversion: LONG signal conditions ───────────────────────────────────
@@ -128,19 +114,19 @@ async def test_mr_long_signal_all_conditions_met(default_settings):
     lower_bb = 39_500.0
     middle_bb = 40_500.0
     upper_bb = 41_500.0
-    atr = 300.0
+    atr = 80.0
 
-    ind_1h = make_ind1h(adx=10.0, atr=400.0, close=close)
-    ind_15m = make_ind15m(
+    ind_15m = make_ind15m(adx=10.0)  # ranging
+    ind_5m = make_ind5m_mr(
         close=close,
         bb_lower=lower_bb,
         bb_middle=middle_bb,
         bb_upper=upper_bb,
-        rsi=25.0,          # oversold
+        rsi=32.0,          # oversold (< 35)
         atr=atr,
-        prev_low=lower_bb - 100,  # prev candle low was below lower BB
+        prev_low=lower_bb - 30,  # prev candle low was below lower BB
     )
-    strat = make_mr(default_settings, ind_15m=ind_15m, ind_1h=ind_1h)
+    strat = make_mr(default_settings, ind_5m=ind_5m, ind_15m=ind_15m)
     signal = await strat.evaluate("BTCUSDT", dummy_df(), dummy_df())
 
     assert signal is not None
@@ -158,12 +144,12 @@ async def test_mr_long_signal_all_conditions_met(default_settings):
 async def test_mr_no_long_if_rsi_not_oversold(default_settings):
     close = 40_100.0
     lower_bb = 39_500.0
-    ind_1h = make_ind1h(adx=10.0, atr=400.0, close=close)
-    ind_15m = make_ind15m(
+    ind_15m = make_ind15m(adx=10.0)
+    ind_5m = make_ind5m_mr(
         close=close, bb_lower=lower_bb, rsi=45.0,  # RSI not oversold
-        atr=300.0, prev_low=lower_bb - 100,
+        atr=80.0, prev_low=lower_bb - 30,
     )
-    strat = make_mr(default_settings, ind_15m=ind_15m, ind_1h=ind_1h)
+    strat = make_mr(default_settings, ind_5m=ind_5m, ind_15m=ind_15m)
     signal = await strat.evaluate("BTCUSDT", dummy_df(), dummy_df())
     assert signal is None
 
@@ -172,12 +158,12 @@ async def test_mr_no_long_if_rsi_not_oversold(default_settings):
 async def test_mr_no_long_if_prev_low_not_below_lower_bb(default_settings):
     close = 40_100.0
     lower_bb = 39_500.0
-    ind_1h = make_ind1h(adx=10.0, atr=400.0, close=close)
-    ind_15m = make_ind15m(
-        close=close, bb_lower=lower_bb, rsi=25.0, atr=300.0,
+    ind_15m = make_ind15m(adx=10.0)
+    ind_5m = make_ind5m_mr(
+        close=close, bb_lower=lower_bb, rsi=32.0, atr=80.0,
         prev_low=39_600.0,  # prev low was ABOVE lower BB — no touch
     )
-    strat = make_mr(default_settings, ind_15m=ind_15m, ind_1h=ind_1h)
+    strat = make_mr(default_settings, ind_5m=ind_5m, ind_15m=ind_15m)
     signal = await strat.evaluate("BTCUSDT", dummy_df(), dummy_df())
     assert signal is None
 
@@ -187,12 +173,12 @@ async def test_mr_no_long_if_current_close_still_below_lower_bb(default_settings
     """Current close must be ABOVE lower BB (closed back inside)."""
     lower_bb = 39_500.0
     close = 39_400.0  # still below lower BB
-    ind_1h = make_ind1h(adx=10.0, atr=400.0, close=close)
-    ind_15m = make_ind15m(
-        close=close, bb_lower=lower_bb, rsi=25.0, atr=300.0,
-        prev_low=lower_bb - 100,
+    ind_15m = make_ind15m(adx=10.0)
+    ind_5m = make_ind5m_mr(
+        close=close, bb_lower=lower_bb, rsi=32.0, atr=80.0,
+        prev_low=lower_bb - 30,
     )
-    strat = make_mr(default_settings, ind_15m=ind_15m, ind_1h=ind_1h)
+    strat = make_mr(default_settings, ind_5m=ind_5m, ind_15m=ind_15m)
     signal = await strat.evaluate("BTCUSDT", dummy_df(), dummy_df())
     assert signal is None
 
@@ -206,19 +192,19 @@ async def test_mr_short_signal_all_conditions_met(default_settings):
     upper_bb = 41_500.0
     middle_bb = 40_500.0
     lower_bb = 39_500.0
-    atr = 300.0
+    atr = 80.0
 
-    ind_1h = make_ind1h(adx=10.0, atr=400.0, close=close)
-    ind_15m = make_ind15m(
+    ind_15m = make_ind15m(adx=10.0)  # ranging
+    ind_5m = make_ind5m_mr(
         close=close,
         bb_lower=lower_bb,
         bb_middle=middle_bb,
         bb_upper=upper_bb,
-        rsi=75.0,          # overbought
+        rsi=68.0,          # overbought (> 65 threshold)
         atr=atr,
-        prev_high=upper_bb + 100,  # prev candle high was above upper BB
+        prev_high=upper_bb + 30,  # prev candle high was above upper BB
     )
-    strat = make_mr(default_settings, ind_15m=ind_15m, ind_1h=ind_1h)
+    strat = make_mr(default_settings, ind_5m=ind_5m, ind_15m=ind_15m)
     signal = await strat.evaluate("BTCUSDT", dummy_df(), dummy_df())
 
     assert signal is not None
@@ -232,12 +218,12 @@ async def test_mr_short_signal_all_conditions_met(default_settings):
 async def test_mr_no_short_if_rsi_not_overbought(default_settings):
     close = 40_900.0
     upper_bb = 41_500.0
-    ind_1h = make_ind1h(adx=10.0, atr=400.0, close=close)
-    ind_15m = make_ind15m(
-        close=close, bb_upper=upper_bb, rsi=60.0, atr=300.0,  # RSI not overbought
-        prev_high=upper_bb + 100,
+    ind_15m = make_ind15m(adx=10.0)
+    ind_5m = make_ind5m_mr(
+        close=close, bb_upper=upper_bb, rsi=60.0, atr=80.0,  # RSI not overbought (< 65)
+        prev_high=upper_bb + 30,
     )
-    strat = make_mr(default_settings, ind_15m=ind_15m, ind_1h=ind_1h)
+    strat = make_mr(default_settings, ind_5m=ind_5m, ind_15m=ind_15m)
     signal = await strat.evaluate("BTCUSDT", dummy_df(), dummy_df())
     assert signal is None
 
@@ -442,11 +428,11 @@ def test_swing_sl_long_caps_at_2x_atr(default_settings):
 @pytest.mark.asyncio
 async def test_mr_real_indicators_ranging_market_produces_valid_signal_or_none(default_settings):
     """End-to-end: MR strategy with real indicator computation on ranging data."""
+    df_5m = make_ranging_ohlcv(n=150)
     df_15m = make_ranging_ohlcv(n=100)
-    df_1h = make_ranging_ohlcv(n=100)
     strat = MeanReversionStrategy(default_settings)
     # Should not raise regardless of whether signal is produced
-    signal = await strat.evaluate("BTCUSDT", df_15m, df_1h)
+    signal = await strat.evaluate("BTCUSDT", df_5m, df_15m)
     assert signal is None or isinstance(signal, Signal)
 
 

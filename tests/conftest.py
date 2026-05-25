@@ -7,7 +7,7 @@ import pandas as pd
 import pytest
 
 from karen.config import Settings, StrategyMode
-from karen.indicators.ta import Indicators1h, Indicators15m
+from karen.indicators.ta import Indicators1h, Indicators15m, Indicators5m_MR
 
 # ─── Settings fixture ─────────────────────────────────────────────────────────
 
@@ -27,11 +27,11 @@ def default_settings() -> Settings:
         max_daily_loss_pct=5.0,
         max_trades_per_day=25,
         mr_bb_period=20,
-        mr_bb_std=2.0,
+        mr_bb_std=1.8,
         mr_rsi_period=14,
-        mr_rsi_oversold=30.0,
-        mr_rsi_overbought=70.0,
-        mr_adx_max=20.0,
+        mr_rsi_oversold=35.0,
+        mr_rsi_overbought=65.0,
+        mr_adx_max=25.0,
         tf_ema_fast=21,
         tf_ema_mid=50,
         tf_ema_slow=200,
@@ -113,6 +113,7 @@ def make_ind15m(
     vol_ma: float = 400.0,
     prev_low: float | None = None,
     prev_high: float | None = None,
+    adx: float = 15.0,
 ) -> Indicators15m:
     """
     Build a minimal Indicators15m with controlled last-two values.
@@ -148,6 +149,7 @@ def make_ind15m(
         high=_high,
         low=_low,
         volume=_volume,
+        adx=_const_series(adx, n),
     )
 
 
@@ -165,6 +167,39 @@ def make_ind1h(
         ema_slow=_const_series(ema_slow, n),
         atr=_const_series(atr, n),
         close=_const_series(close, n),
+    )
+
+
+def make_ind5m_mr(
+    n: int = 50,
+    close: float = 40_000.0,
+    bb_upper: float = 41_000.0,
+    bb_middle: float = 40_500.0,
+    bb_lower: float = 40_000.0,
+    rsi: float = 50.0,
+    atr: float = 80.0,
+    prev_low: float | None = None,
+    prev_high: float | None = None,
+) -> Indicators5m_MR:
+    """Build a minimal Indicators5m_MR with controlled last-two values."""
+    _close = _const_series(close, n)
+    _high = _const_series(close + 50, n)
+    _low = _const_series(close - 50, n)
+
+    if prev_low is not None:
+        _low.iloc[-2] = prev_low
+    if prev_high is not None:
+        _high.iloc[-2] = prev_high
+
+    return Indicators5m_MR(
+        bb_upper=_const_series(bb_upper, n),
+        bb_middle=_const_series(bb_middle, n),
+        bb_lower=_const_series(bb_lower, n),
+        rsi=_const_series(rsi, n),
+        atr=_const_series(atr, n),
+        close=_close,
+        high=_high,
+        low=_low,
     )
 
 

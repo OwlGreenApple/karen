@@ -57,11 +57,11 @@ class Settings(BaseSettings):
 
     # Mean Reversion params
     mr_bb_period: int = Field(default=20, ge=5)
-    mr_bb_std: float = Field(default=2.0, gt=0)
+    mr_bb_std: float = Field(default=1.8, gt=0)
     mr_rsi_period: int = Field(default=14, ge=2)
-    mr_rsi_oversold: float = Field(default=30.0, gt=0, lt=50)
-    mr_rsi_overbought: float = Field(default=70.0, gt=50, lt=100)
-    mr_adx_max: float = Field(default=20.0, gt=0)
+    mr_rsi_oversold: float = Field(default=35.0, gt=0, lt=50)
+    mr_rsi_overbought: float = Field(default=65.0, gt=50, lt=100)
+    mr_adx_max: float = Field(default=25.0, gt=0)
 
     # Trend Following params
     tf_ema_fast: int = Field(default=21, ge=5)

@@ -1,4 +1,4 @@
-"""Mean Reversion strategy — trades price extremes back to the mean."""
+"""Mean Reversion strategy — 5m signal, 15m filter, aggressive settings."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import pandas as pd
 from loguru import logger
 
 from karen.config import Settings, StrategyMode
-from karen.indicators.ta import Indicators1h, Indicators15m, compute_1h, compute_15m
+from karen.indicators.ta import Indicators15m, Indicators5m_MR, compute_15m, compute_5m_mr
 from karen.strategies.base import AbstractStrategy, Signal
 
 
@@ -16,16 +16,15 @@ class MeanReversionStrategy(AbstractStrategy):
     """
     Entry conditions (ALL must pass):
 
-    1h filter:
+    15m filter:
       - ADX(14) < MR_ADX_MAX (ranging regime)
-      - ATR/price > 0.3% (enough volatility)
 
-    15m signal — LONG:
+    5m signal — LONG:
       - Previous candle low ≤ lower BB  (touched/crossed below)
       - Current candle closes > lower BB (reversal confirmation)
       - RSI(14) < MR_RSI_OVERSOLD
 
-    15m signal — SHORT:
+    5m signal — SHORT:
       - Previous candle high ≥ upper BB
       - Current candle closes < upper BB
       - RSI(14) > MR_RSI_OVERBOUGHT
@@ -41,66 +40,63 @@ class MeanReversionStrategy(AbstractStrategy):
         self,
         settings: Settings,
         *,
-        compute_15m_fn: Callable[..., Indicators15m] = compute_15m,
-        compute_1h_fn: Callable[..., Indicators1h] = compute_1h,
+        compute_signal_fn: Callable[..., Indicators5m_MR] = compute_5m_mr,
+        compute_filter_fn: Callable[..., Indicators15m] = compute_15m,
     ) -> None:
         super().__init__(settings)
-        self._compute_15m = compute_15m_fn
-        self._compute_1h = compute_1h_fn
+        self._compute_signal = compute_signal_fn
+        self._compute_filter = compute_filter_fn
 
     @property
     def mode(self) -> StrategyMode:
         return StrategyMode.MEAN_REVERSION
 
+    @property
+    def timeframes(self) -> tuple[str, str, int]:
+        return ("5m", "15m", 300)
+
+    @property
+    def candle_interval_minutes(self) -> int:
+        return 5
+
     async def evaluate(
         self,
         symbol: str,
-        df_lower: pd.DataFrame,
-        df_upper: pd.DataFrame,
+        df_lower: pd.DataFrame,   # 5m — signal
+        df_upper: pd.DataFrame,   # 15m — regime filter
     ) -> Signal | None:
         s = self._settings
 
-        # Need enough history for all indicators (BB 20, EMA 200 headroom)
         if not self._has_enough_data(df_lower, 50) or not self._has_enough_data(df_upper, 30):
             logger.debug(f"{symbol} MR: insufficient data")
             return None
 
         try:
-            ind_1h = self._compute_1h(df_upper, s)
-            ind_15m = self._compute_15m(df_lower, s)
+            ind_15m = self._compute_filter(df_upper, s)
+            ind_5m = self._compute_signal(df_lower, s)
         except Exception:
             logger.exception(f"{symbol} MR: indicator error")
             return None
 
-        # ── 1h regime filter ──────────────────────────────────────────────
+        # ── 15m regime filter ──────────────────────────────────────────────
 
-        adx_1h = _last(ind_1h.adx)
-        if adx_1h is None or adx_1h >= s.mr_adx_max:
-            logger.debug(f"{symbol} MR: ADX={adx_1h:.1f} ≥ {s.mr_adx_max} (not ranging)")
+        adx_15m = _last(ind_15m.adx)
+        if adx_15m is None or adx_15m >= s.mr_adx_max:
+            logger.debug(f"{symbol} MR: ADX={adx_15m:.1f} ≥ {s.mr_adx_max} (not ranging)")
             return None
 
-        atr_1h = _last(ind_1h.atr)
-        price_1h = _last(ind_1h.close)
-        if atr_1h is None or price_1h is None or price_1h == 0:
-            return None
-        if atr_1h / price_1h < 0.003:
-            logger.debug(f"{symbol} MR: ATR/price={atr_1h/price_1h:.4f} < 0.003 (low vol)")
-            return None
+        # ── 5m signal check ───────────────────────────────────────────────
 
-        # ── 15m signal check ──────────────────────────────────────────────
+        atr = _last(ind_5m.atr)
+        rsi = _last(ind_5m.rsi)
+        upper = _last(ind_5m.bb_upper)
+        middle = _last(ind_5m.bb_middle)
+        lower = _last(ind_5m.bb_lower)
+        curr_close = _last(ind_5m.close)
+        prev_high = _nth_last(ind_5m.high, 2)
+        prev_low = _nth_last(ind_5m.low, 2)
 
-        atr = _last(ind_15m.atr)
-        rsi = _last(ind_15m.rsi)
-        upper = _last(ind_15m.bb_upper)
-        middle = _last(ind_15m.bb_middle)
-        lower = _last(ind_15m.bb_lower)
-
-        prev_high = _nth_last(ind_15m.high, 2)
-        prev_low = _nth_last(ind_15m.low, 2)
-        curr_close = _last(ind_15m.close)
-
-        if any(v is None for v in [atr, rsi, upper, middle, lower,
-                                    prev_high, prev_low, curr_close]):
+        if any(v is None for v in [atr, rsi, upper, middle, lower, curr_close, prev_high, prev_low]):
             return None
 
         # LONG: prev candle touched/crossed below lower BB, current closes back inside

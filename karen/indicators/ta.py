@@ -37,6 +37,22 @@ class Indicators15m:
     high: pd.Series
     low: pd.Series
     volume: pd.Series
+    # ADX — for use as MR regime filter when 15m is the upper TF
+    adx: pd.Series = None  # type: ignore[assignment]
+
+
+@dataclass
+class Indicators5m_MR:
+    """5-minute indicators for aggressive mean reversion signal generation."""
+
+    bb_upper: pd.Series
+    bb_middle: pd.Series
+    bb_lower: pd.Series
+    rsi: pd.Series
+    atr: pd.Series
+    close: pd.Series
+    high: pd.Series
+    low: pd.Series
 
 
 @dataclass
@@ -115,6 +131,10 @@ def compute_15m(df: pd.DataFrame, settings: Settings) -> Indicators15m:
     # Volume SMA
     vol_ma = _coerce(ta.sma(volume, length=20))
 
+    # ADX — for ranging regime detection when used as MR filter TF
+    adx_df = ta.adx(high, low, close, length=14)
+    adx = _pick(adx_df, "ADX_")
+
     return Indicators15m(
         bb_upper=bb_upper,
         bb_middle=bb_middle,
@@ -130,6 +150,7 @@ def compute_15m(df: pd.DataFrame, settings: Settings) -> Indicators15m:
         high=high,
         low=low,
         volume=volume,
+        adx=adx,
     )
 
 
@@ -158,6 +179,33 @@ def compute_1m(df: pd.DataFrame, settings: Settings) -> Indicators1m:
         high=high,
         low=low,
         volume=volume,
+    )
+
+
+def compute_5m_mr(df: pd.DataFrame, settings: Settings) -> Indicators5m_MR:
+    """Compute BB, RSI, ATR on 5m data for aggressive mean reversion."""
+    _validate(df, min_rows=30)
+
+    close = df["close"]
+    high = df["high"]
+    low = df["low"]
+
+    bb_df = ta.bbands(close, length=settings.mr_bb_period, std=settings.mr_bb_std)
+    bb_upper = _pick(bb_df, "BBU_")
+    bb_middle = _pick(bb_df, "BBM_")
+    bb_lower = _pick(bb_df, "BBL_")
+    rsi = _coerce(ta.rsi(close, length=settings.mr_rsi_period))
+    atr = _coerce(ta.atr(high, low, close, length=14))
+
+    return Indicators5m_MR(
+        bb_upper=bb_upper,
+        bb_middle=bb_middle,
+        bb_lower=bb_lower,
+        rsi=rsi,
+        atr=atr,
+        close=close,
+        high=high,
+        low=low,
     )
 
 

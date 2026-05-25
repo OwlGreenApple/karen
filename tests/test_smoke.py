@@ -33,6 +33,7 @@ from karen.strategies.trend_following import TrendFollowingStrategy
 from tests.conftest import (
     make_ind1h,
     make_ind15m,
+    make_ind5m_mr,
     make_ohlcv,
     make_ranging_ohlcv,
     make_trending_ohlcv,
@@ -301,19 +302,19 @@ async def test_full_trade_open_no_time_stop_when_in_profit(default_settings, db)
 async def test_mr_signal_leads_to_open_position(default_settings, db):
     """MR strategy generates a LONG signal → order_mgr opens a trade."""
 
-    ind_15m = make_ind15m(
+    ind_5m = make_ind5m_mr(
         close=40_100.0,      # close > bb_lower — bounce back inside band
         bb_lower=40_000.0,
-        rsi=28.0,
-        prev_low=39_950.0,  # prev_low <= bb_lower — previous candle touched band
-        atr=300.0,
+        rsi=32.0,            # oversold (< 35 threshold)
+        prev_low=39_950.0,   # prev_low <= bb_lower — previous candle touched band
+        atr=80.0,
     )
-    ind_1h = make_ind1h(adx=15.0)
+    ind_15m = make_ind15m(adx=15.0)  # ranging filter
 
     strategy = MeanReversionStrategy(
         default_settings,
-        compute_15m_fn=lambda df, s: ind_15m,
-        compute_1h_fn=lambda df, s: ind_1h,
+        compute_signal_fn=lambda df, s: ind_5m,
+        compute_filter_fn=lambda df, s: ind_15m,
     )
 
     df = make_ranging_ohlcv()
