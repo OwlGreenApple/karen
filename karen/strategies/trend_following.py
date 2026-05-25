@@ -60,18 +60,18 @@ class TrendFollowingStrategy(AbstractStrategy):
     async def evaluate(
         self,
         symbol: str,
-        df_15m: pd.DataFrame,
-        df_1h: pd.DataFrame,
+        df_lower: pd.DataFrame,
+        df_upper: pd.DataFrame,
     ) -> Signal | None:
         s = self._settings
 
-        if not self._has_enough_data(df_15m, 50) or not self._has_enough_data(df_1h, 30):
+        if not self._has_enough_data(df_lower, 50) or not self._has_enough_data(df_upper, 30):
             logger.debug(f"{symbol} TF: insufficient data")
             return None
 
         try:
-            ind_1h = self._compute_1h(df_1h, s)
-            ind_15m = self._compute_15m(df_15m, s)
+            ind_1h = self._compute_1h(df_upper, s)
+            ind_15m = self._compute_15m(df_lower, s)
         except Exception:
             logger.exception(f"{symbol} TF: indicator error")
             return None
@@ -129,7 +129,7 @@ class TrendFollowingStrategy(AbstractStrategy):
             )
 
             if pullback_to_ema and macd_turned_positive:
-                sl = _swing_sl(df_15m, "long", atr, self._SWING_LOOKBACK)  # type: ignore[arg-type]
+                sl = _swing_sl(df_lower, "long", atr, self._SWING_LOOKBACK)  # type: ignore[arg-type]
                 tp1 = curr_close + 2.5 * atr  # type: ignore[operator]
                 logger.info(
                     f"{symbol} TF LONG signal | close={curr_close:.2f} "
@@ -161,7 +161,7 @@ class TrendFollowingStrategy(AbstractStrategy):
             )
 
             if rally_to_ema and macd_turned_negative:
-                sl = _swing_sl(df_15m, "short", atr, self._SWING_LOOKBACK)  # type: ignore[arg-type]
+                sl = _swing_sl(df_lower, "short", atr, self._SWING_LOOKBACK)  # type: ignore[arg-type]
                 tp1 = curr_close - 2.5 * atr  # type: ignore[operator]
                 logger.info(
                     f"{symbol} TF SHORT signal | close={curr_close:.2f} "

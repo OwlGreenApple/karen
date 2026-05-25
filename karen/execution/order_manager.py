@@ -15,7 +15,7 @@ from karen.exchange.binance_client import BinanceClient
 from karen.exchange.websocket import Kline
 from karen.persistence.db import AsyncSessionLocal
 from karen.persistence.models import CloseReason, Trade, TradeSide, TradeStatus
-from karen.risk.position_sizing import compute_dollar_risk, compute_quantity
+from karen.risk.position_sizing import compute_dollar_risk, compute_quantity_by_margin_pct
 from karen.strategies.base import Signal
 
 
@@ -31,7 +31,8 @@ class OrderManager:
     - Mode switch: cancel all pending entry orders
     """
 
-    _TIME_STOP_CANDLES = 8  # MR strategy
+    _TIME_STOP_CANDLES = 8   # MR: 8 × 15m = 2 hours
+    _SCALP_TIME_STOP = 10    # Scalp: 10 × 1m = 10 minutes
 
     def __init__(
         self,
@@ -69,11 +70,11 @@ class OrderManager:
         s = self._settings
 
         try:
-            qty = compute_quantity(
+            qty = compute_quantity_by_margin_pct(
                 equity_usdt=equity,
-                risk_pct=s.risk_per_trade_pct,
+                margin_pct=s.position_size_pct,
                 entry_price=signal.entry_price,
-                sl_price=signal.sl_price,
+                leverage=s.leverage,
             )
         except ValueError as exc:
             logger.error(f"{signal.symbol}: position sizing failed — {exc}")
@@ -273,31 +274,38 @@ class OrderManager:
 
     async def on_closed_kline(self, kline: Kline) -> None:
         """
-        Called by the WebSocket feed on each finalized 15m candle.
+        Called by the WebSocket feed on each finalized kline.
 
         Handles:
-        - MR time stop: close if 8 candles passed without profit
-        - TF trailing stop: update chandelier SL if it moves closer
+        - MR time stop: close if 8 × 15m candles passed without profit
+        - Scalp time stop: close if 10 × 1m candles passed without profit
+        - TF trailing stop: update chandelier SL on each 15m candle
         """
-        if not kline.is_closed or kline.timeframe != "15m":
+        if not kline.is_closed:
             return
 
         symbol = kline.symbol
-        self._update_kline_buffer(symbol, kline)
-
         open_trades = await self._get_open_trades_for_symbol(symbol)
+
         for trade in open_trades:
+            expected_tf = "1m" if trade.strategy_mode == "scalp_1m" else "15m"
+            if kline.timeframe != expected_tf:
+                continue
+
+            self._update_kline_buffer(symbol, kline)
             trade.candles_open += 1
             await self._persist_candles_open(trade)
 
             if trade.strategy_mode == "mean_reversion":
-                await self._check_time_stop(trade, kline)
+                await self._check_time_stop(trade, kline, self._TIME_STOP_CANDLES)
+            elif trade.strategy_mode == "scalp_1m":
+                await self._check_time_stop(trade, kline, self._SCALP_TIME_STOP)
             else:
                 await self._check_trailing_stop(trade, kline)
 
-    async def _check_time_stop(self, trade: Trade, kline: Kline) -> None:
-        """Close MR trade if 8+ candles open and not in profit."""
-        if trade.candles_open < self._TIME_STOP_CANDLES:
+    async def _check_time_stop(self, trade: Trade, kline: Kline, max_candles: int) -> None:
+        """Close trade if max_candles passed and not in profit."""
+        if trade.candles_open < max_candles:
             return
         current_price = kline.close
         in_profit = (

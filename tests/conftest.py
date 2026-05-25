@@ -21,6 +21,7 @@ def default_settings() -> Settings:
         trading_enabled=False,
         strategy_mode=StrategyMode.MEAN_REVERSION,
         leverage=5,
+        position_size_pct=10.0,
         risk_per_trade_pct=1.0,
         max_concurrent_positions=3,
         max_daily_loss_pct=5.0,
@@ -36,6 +37,17 @@ def default_settings() -> Settings:
         tf_ema_slow=200,
         tf_adx_min=25.0,
         tf_volume_multiplier=1.2,
+        scalp_ema_fast=9,
+        scalp_ema_slow=21,
+        scalp_rsi_period=7,
+        scalp_volume_multiplier=1.3,
+        scalp_atr_period=7,
+        scalp_tp_atr_mult=1.5,
+        scalp_sl_atr_mult=1.0,
+        scalp_filter_ema=20,
+        scalp_5m_adx_min=15.0,
+        telegram_bot_token="",
+        telegram_chat_id="",
     )
 
 

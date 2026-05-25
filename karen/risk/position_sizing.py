@@ -35,6 +35,30 @@ def compute_quantity(
     return risk_amount / sl_distance
 
 
+def compute_quantity_by_margin_pct(
+    equity_usdt: float,
+    margin_pct: float,
+    entry_price: float,
+    leverage: int,
+) -> float:
+    """
+    Return quantity where margin = equity × margin_pct%.
+
+    margin   = equity × margin_pct / 100
+    notional = margin × leverage
+    quantity = notional / entry_price
+    """
+    if equity_usdt <= 0:
+        raise ValueError(f"equity_usdt must be positive, got {equity_usdt}")
+    if entry_price <= 0:
+        raise ValueError(f"entry_price must be positive, got {entry_price}")
+    if leverage <= 0:
+        raise ValueError(f"leverage must be positive, got {leverage}")
+    margin = equity_usdt * (margin_pct / 100.0)
+    notional = margin * leverage
+    return notional / entry_price
+
+
 def compute_margin_required(
     quantity: float,
     entry_price: float,

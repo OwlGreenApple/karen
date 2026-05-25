@@ -55,19 +55,19 @@ class MeanReversionStrategy(AbstractStrategy):
     async def evaluate(
         self,
         symbol: str,
-        df_15m: pd.DataFrame,
-        df_1h: pd.DataFrame,
+        df_lower: pd.DataFrame,
+        df_upper: pd.DataFrame,
     ) -> Signal | None:
         s = self._settings
 
         # Need enough history for all indicators (BB 20, EMA 200 headroom)
-        if not self._has_enough_data(df_15m, 50) or not self._has_enough_data(df_1h, 30):
+        if not self._has_enough_data(df_lower, 50) or not self._has_enough_data(df_upper, 30):
             logger.debug(f"{symbol} MR: insufficient data")
             return None
 
         try:
-            ind_1h = self._compute_1h(df_1h, s)
-            ind_15m = self._compute_15m(df_15m, s)
+            ind_1h = self._compute_1h(df_upper, s)
+            ind_15m = self._compute_15m(df_lower, s)
         except Exception:
             logger.exception(f"{symbol} MR: indicator error")
             return None

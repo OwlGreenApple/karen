@@ -39,6 +39,7 @@ from karen.persistence.db import init_db
 from karen.risk.guardrails import DailyGuardrails
 from karen.strategies.base import AbstractStrategy
 from karen.strategies.mean_reversion import MeanReversionStrategy
+from karen.strategies.scalp import ScalpStrategy
 from karen.strategies.trend_following import TrendFollowingStrategy
 
 # ─── Strategy factory ─────────────────────────────────────────────────────────
@@ -47,22 +48,24 @@ from karen.strategies.trend_following import TrendFollowingStrategy
 def make_strategy(settings: Settings) -> AbstractStrategy:
     if settings.strategy_mode == StrategyMode.MEAN_REVERSION:
         return MeanReversionStrategy(settings)
+    if settings.strategy_mode == StrategyMode.SCALP_1M:
+        return ScalpStrategy(settings)
     return TrendFollowingStrategy(settings)
 
 
 # ─── Timing helpers ───────────────────────────────────────────────────────────
 
 
-async def _wait_for_15m_close() -> None:
-    """Sleep until 2 seconds after the next 15m candle close."""
+async def _wait_for_candle_close(interval_minutes: int) -> None:
+    """Sleep until 2 seconds after the next N-minute candle close."""
     now = datetime.now(tz=UTC)
     seconds_in_day = now.hour * 3600 + now.minute * 60 + now.second + now.microsecond / 1e6
-    period = 15 * 60
+    period = interval_minutes * 60
     seconds_into_period = seconds_in_day % period
     sleep_for = period - seconds_into_period + 2.0  # +2s exchange latency buffer
     if sleep_for <= 2.0:
         sleep_for += period
-    logger.debug(f"Next 15m candle in {sleep_for:.0f}s")
+    logger.debug(f"Next {interval_minutes}m candle in {sleep_for:.0f}s")
     await asyncio.sleep(sleep_for)
 
 
@@ -78,12 +81,13 @@ async def candle_loop(
     notifier: TelegramNotifier,
 ) -> None:
     """
-    Wakes on each 15m candle close, fetches OHLCV for all symbols,
-    runs the active strategy, and places orders if conditions are met.
+    Wakes on each candle close (interval determined by active strategy),
+    fetches OHLCV for all symbols, runs the active strategy, and places orders.
     """
     logger.info("Candle loop started")
     while True:
-        await _wait_for_15m_close()
+        strategy = strategy_getter()
+        await _wait_for_candle_close(strategy.candle_interval_minutes)
         settings = config_watcher.settings
 
         try:
@@ -101,6 +105,7 @@ async def candle_loop(
             continue
 
         strategy = strategy_getter()
+        lower_tf, upper_tf, limit = strategy.timeframes
         open_symbols = await order_mgr.get_open_symbol_set()
         open_count = len(open_symbols)
 
@@ -110,9 +115,9 @@ async def candle_loop(
                 continue
 
             try:
-                df_15m = await client.fetch_ohlcv(symbol, "15m", limit=250)
-                df_1h = await client.fetch_ohlcv(symbol, "1h", limit=250)
-                signal = await strategy.evaluate(symbol, df_15m, df_1h)
+                df_lower = await client.fetch_ohlcv(symbol, lower_tf, limit=limit)
+                df_upper = await client.fetch_ohlcv(symbol, upper_tf, limit=limit)
+                signal = await strategy.evaluate(symbol, df_lower, df_upper)
             except Exception:
                 logger.exception(f"{symbol}: error during evaluation")
                 continue

@@ -292,7 +292,7 @@ async def test_open_position_blocks_below_min_notional(order_mgr, mock_client, d
     # equity × 1% / sl_dist = 100 / 0.001 = 100,000 units → notional = 100,000 × $1 = $100k
     # Actually this won't be below min notional... let me use a different approach
     # Instead: mock compute_quantity to return a tiny qty
-    with patch("karen.execution.order_manager.compute_quantity", return_value=0.000001):
+    with patch("karen.execution.order_manager.compute_quantity_by_margin_pct", return_value=0.000001):
         trade = await order_mgr.open_position(signal, equity=10_000.0)
     assert trade is None
     mock_client.place_order.assert_not_called()
@@ -397,7 +397,7 @@ async def test_time_stop_fires_after_8_candles_no_profit(
 
     kline = _make_kline(close=39_800.0)  # below entry (no profit)
     # Manually call the time stop check
-    await order_mgr._check_time_stop(trade, kline)
+    await order_mgr._check_time_stop(trade, kline, 8)
 
     # close_position should have been called (market order placed)
     mock_client.place_order.assert_called_once()
@@ -419,7 +419,7 @@ async def test_time_stop_does_not_fire_if_in_profit(
         trade = await session.get(Trade, open_trade.id)
 
     kline = _make_kline(close=40_200.0)  # above entry (in profit)
-    await order_mgr._check_time_stop(trade, kline)
+    await order_mgr._check_time_stop(trade, kline, 8)
     mock_client.place_order.assert_not_called()
 
 
@@ -436,7 +436,7 @@ async def test_time_stop_does_not_fire_before_8_candles(
         trade = await session.get(Trade, open_trade.id)
 
     kline = _make_kline(close=39_500.0)
-    await order_mgr._check_time_stop(trade, kline)
+    await order_mgr._check_time_stop(trade, kline, 8)
     mock_client.place_order.assert_not_called()
 
 

@@ -79,7 +79,7 @@ class PriceFeed:
     Auto-reconnects with exponential backoff on disconnect.
     """
 
-    _TIMEFRAMES = ("15m", "1h")
+    _TIMEFRAMES = ("1m", "15m", "1h")
     _MAX_RECONNECT_DELAY = 60.0
 
     def __init__(self, symbols: list[str], testnet: bool = True) -> None:

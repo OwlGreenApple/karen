@@ -45,20 +45,30 @@ class AbstractStrategy(ABC):
         """Return the StrategyMode this strategy implements."""
         ...
 
+    @property
+    def timeframes(self) -> tuple[str, str, int]:
+        """Return (lower_tf, upper_tf, candle_limit) for OHLCV fetching."""
+        return ("15m", "1h", 250)
+
+    @property
+    def candle_interval_minutes(self) -> int:
+        """Minutes between candle evaluations."""
+        return 15
+
     @abstractmethod
     async def evaluate(
         self,
         symbol: str,
-        df_15m: pd.DataFrame,
-        df_1h: pd.DataFrame,
+        df_lower: pd.DataFrame,
+        df_upper: pd.DataFrame,
     ) -> Signal | None:
         """
         Evaluate market conditions and return a Signal, or None if no entry.
 
         Args:
-            symbol:  Trading pair, e.g. "BTCUSDT"
-            df_15m:  15-minute OHLCV DataFrame (index: UTC DatetimeTZDtype)
-            df_1h:   1-hour OHLCV DataFrame (same index type)
+            symbol:    Trading pair, e.g. "BTCUSDT"
+            df_lower:  Lower timeframe OHLCV DataFrame (signal TF)
+            df_upper:  Upper timeframe OHLCV DataFrame (regime filter TF)
 
         Returns:
             Signal if all entry conditions are met, else None.

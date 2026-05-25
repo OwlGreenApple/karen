@@ -230,8 +230,9 @@ async def test_callback_exception_does_not_break_dispatch(feed: PriceFeed) -> No
 
 def test_build_streams_contains_all_expected(feed: PriceFeed) -> None:
     streams = feed._build_streams()
-    # 2 symbols × 2 timeframes + 2 mark price = 6
-    assert len(streams) == 6
+    # 2 symbols × 3 timeframes (1m, 15m, 1h) + 2 mark price = 8
+    assert len(streams) == 8
+    assert "btcusdt@kline_1m" in streams
     assert "btcusdt@kline_15m" in streams
     assert "btcusdt@kline_1h" in streams
     assert "ethusdt@kline_15m" in streams

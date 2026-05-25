@@ -22,6 +22,7 @@ ENV_PATH = Path(__file__).parent.parent / ".env"
 class StrategyMode(StrEnum):
     MEAN_REVERSION = "mean_reversion"
     TREND_FOLLOWING = "trend_following"
+    SCALP_1M = "scalp_1m"
 
 
 class Settings(BaseSettings):
@@ -47,7 +48,8 @@ class Settings(BaseSettings):
     )
 
     # Risk params
-    leverage: int = Field(default=5, ge=1, le=125)
+    leverage: int = Field(default=20, ge=1, le=125)
+    position_size_pct: float = Field(default=10.0, gt=0, le=100)
     risk_per_trade_pct: float = Field(default=1.0, gt=0, le=10)
     max_concurrent_positions: int = Field(default=3, ge=1, le=20)
     max_daily_loss_pct: float = Field(default=5.0, gt=0, le=50)
@@ -67,6 +69,17 @@ class Settings(BaseSettings):
     tf_ema_slow: int = Field(default=200, ge=50)
     tf_adx_min: float = Field(default=25.0, gt=0)
     tf_volume_multiplier: float = Field(default=1.2, gt=0)
+
+    # Scalp (1m signal, 5m filter) params
+    scalp_ema_fast: int = Field(default=9, ge=2)
+    scalp_ema_slow: int = Field(default=21, ge=5)
+    scalp_rsi_period: int = Field(default=7, ge=2)
+    scalp_volume_multiplier: float = Field(default=1.3, gt=0)
+    scalp_atr_period: int = Field(default=7, ge=2)
+    scalp_tp_atr_mult: float = Field(default=1.5, gt=0)
+    scalp_sl_atr_mult: float = Field(default=1.0, gt=0)
+    scalp_filter_ema: int = Field(default=20, ge=5)
+    scalp_5m_adx_min: float = Field(default=15.0, gt=0)
 
     # Telegram
     telegram_bot_token: str = Field(default="")

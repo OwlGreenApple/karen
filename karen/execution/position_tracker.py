@@ -110,6 +110,19 @@ class PositionTracker:
             bp = binance_map.get(trade.symbol)
 
             if bp is None:
+                # Grace period for Karen-opened trades only (orphans have no entry_order_id)
+                # Binance API can lag up to ~30s after a market order fills — avoid false closes
+                if trade.entry_order_id is not None:
+                    opened = trade.opened_at
+                    if opened.tzinfo is None:
+                        opened = opened.replace(tzinfo=UTC)
+                    age_s = (datetime.now(tz=UTC) - opened).total_seconds()
+                    if age_s < 60:
+                        logger.debug(
+                            f"Trade #{trade.id} not on Binance yet ({age_s:.0f}s old) — waiting"
+                        )
+                        continue
+
                 # Position gone from Binance → closed externally
                 reason = await self._determine_close_reason(trade)
                 exit_price = await self._estimate_exit_price(trade)

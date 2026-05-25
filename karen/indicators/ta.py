@@ -40,6 +40,30 @@ class Indicators15m:
 
 
 @dataclass
+class Indicators1m:
+    """All indicators computed from the 1-minute OHLCV DataFrame."""
+
+    ema_fast: pd.Series    # EMA9 — fast crossover line
+    ema_slow: pd.Series    # EMA21 — slow crossover line
+    rsi: pd.Series         # RSI(7) — short momentum
+    atr: pd.Series         # ATR(7) — for SL/TP sizing
+    vol_ma: pd.Series      # SMA-20 of volume
+    close: pd.Series
+    high: pd.Series
+    low: pd.Series
+    volume: pd.Series
+
+
+@dataclass
+class Indicators5m:
+    """All indicators computed from the 5-minute OHLCV DataFrame (regime filter)."""
+
+    ema_filter: pd.Series  # EMA20 — bias direction
+    adx: pd.Series         # ADX(14) — trend strength
+    close: pd.Series
+
+
+@dataclass
 class Indicators1h:
     """All indicators computed from the 1-hour OHLCV DataFrame."""
 
@@ -106,6 +130,53 @@ def compute_15m(df: pd.DataFrame, settings: Settings) -> Indicators15m:
         high=high,
         low=low,
         volume=volume,
+    )
+
+
+def compute_1m(df: pd.DataFrame, settings: Settings) -> Indicators1m:
+    """Compute all 1m indicators needed by ScalpStrategy."""
+    _validate(df, min_rows=30)
+
+    close = df["close"]
+    high = df["high"]
+    low = df["low"]
+    volume = df["volume"]
+
+    ema_fast = _coerce(ta.ema(close, length=settings.scalp_ema_fast))
+    ema_slow = _coerce(ta.ema(close, length=settings.scalp_ema_slow))
+    rsi = _coerce(ta.rsi(close, length=settings.scalp_rsi_period))
+    atr = _coerce(ta.atr(high, low, close, length=settings.scalp_atr_period))
+    vol_ma = _coerce(ta.sma(volume, length=20))
+
+    return Indicators1m(
+        ema_fast=ema_fast,
+        ema_slow=ema_slow,
+        rsi=rsi,
+        atr=atr,
+        vol_ma=vol_ma,
+        close=close,
+        high=high,
+        low=low,
+        volume=volume,
+    )
+
+
+def compute_5m(df: pd.DataFrame, settings: Settings) -> Indicators5m:
+    """Compute 5m regime indicators needed by ScalpStrategy."""
+    _validate(df, min_rows=30)
+
+    close = df["close"]
+    high = df["high"]
+    low = df["low"]
+
+    ema_filter = _coerce(ta.ema(close, length=settings.scalp_filter_ema))
+    adx_df = ta.adx(high, low, close, length=14)
+    adx = _pick(adx_df, "ADX_")
+
+    return Indicators5m(
+        ema_filter=ema_filter,
+        adx=adx,
+        close=close,
     )
 
 

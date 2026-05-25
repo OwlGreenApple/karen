@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -83,7 +83,7 @@ async def _insert_trade(
         tp1_price=40_500.0,
         sl_order_id=sl_order_id,
         tp1_order_id=tp1_order_id,
-        opened_at=datetime.now(tz=UTC),
+        opened_at=datetime.now(tz=UTC) - timedelta(minutes=5),
     )
     async with db_factory() as session:
         session.add(trade)
