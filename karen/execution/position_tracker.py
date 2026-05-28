@@ -139,16 +139,11 @@ class PositionTracker:
         db_symbols = {t.symbol for t in open_trades}
         for symbol, bp in binance_map.items():
             if symbol not in db_symbols:
-                if is_startup:
-                    logger.warning(
-                        f"Found orphaned Binance position on startup: "
-                        f"{symbol} {bp.side} qty={bp.quantity:.6f} — creating DB record"
-                    )
-                    await self._create_orphan_trade(bp)
-                else:
-                    logger.warning(
-                        f"Unexpected Binance position not in DB: {symbol} {bp.side}"
-                    )
+                logger.warning(
+                    f"Binance position not in DB: {symbol} {bp.side} "
+                    f"qty={bp.quantity:.6f} — registering as orphan"
+                )
+                await self._create_orphan_trade(bp)
 
         # ── Update Position table (live mirror) ───────────────────────────
         await self._sync_position_table(binance_map)
@@ -170,16 +165,34 @@ class PositionTracker:
         return CloseReason.MANUAL
 
     async def _estimate_exit_price(self, trade: Trade) -> float:
-        """Best-effort exit price from filled orders or current mark price."""
+        """Best-effort exit price: filled orders → trade history → entry price."""
         for order_id in (trade.sl_order_id, trade.tp2_order_id, trade.tp1_order_id):
             if order_id:
                 try:
                     order = await self._client.fetch_order(trade.symbol, order_id)
-                    if order.status == "closed" and order.price:
-                        return order.price
+                    if order.status == "closed":
+                        # stop_market/take_profit_market orders have no limit price;
+                        # actual fill price is in average_price, fallback to stop_price
+                        fill = order.average_price or order.price or order.stop_price
+                        if fill:
+                            return fill
                 except Exception:
                     pass
-        # Fall back to entry price if we can't determine
+
+        # Binance cancels unfilled reduce_only orders when a position closes,
+        # so by the time reconciler runs, SL/TP orders may already be cancelled.
+        # Use raw trade fill history as the reliable fallback.
+        since_ms = int(trade.opened_at.timestamp() * 1000) if trade.opened_at else None
+        price = await self._client.fetch_last_close_price(trade.symbol, since_ms)
+        if price:
+            logger.debug(
+                f"Trade #{trade.id}: exit price {price} obtained from trade history"
+            )
+            return price
+
+        logger.warning(
+            f"Trade #{trade.id}: could not determine exit price — defaulting to entry price"
+        )
         return trade.entry_price
 
     async def _mark_trade_closed(

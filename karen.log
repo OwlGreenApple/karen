@@ -1,0 +1,416 @@
+[32m2026-05-28 07:57:39.514[0m | [1mINFO    [0m | [36m__main__[0m:[36mrun[0m:[36m152[0m — [1mKaren starting up...[0m
+[32m2026-05-28 07:57:39.530[0m | [1mINFO    [0m | [36mkaren.config[0m:[36mstart[0m:[36m217[0m — [1mConfig watcher started — watching /root/karen/.env[0m
+[32m2026-05-28 07:57:39.549[0m | [1mINFO    [0m | [36mkaren.persistence.db[0m:[36minit_db[0m:[36m31[0m — [1mDatabase initialised at /root/karen/data/karen.db[0m
+[32m2026-05-28 07:57:39.572[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mconnect[0m:[36m104[0m — [1mBinanceClient connected (LIVE)[0m
+[32m2026-05-28 07:57:40.559[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mBTCUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:40.821[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mETHUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:41.079[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mDOTUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:41.338[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mHYPEUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:41.593[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mAAVEUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:41.849[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mDOGEUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:42.103[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mXRPUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:42.367[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mBNBUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:42.625[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mALGOUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:42.884[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mLINKUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:43.136[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mTRXUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:43.397[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mAVAXUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:43.646[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mLTCUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:43.902[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1m1000SHIBUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:44.153[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mUNIUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:44.402[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mPOLUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:44.655[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mTRUMPUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:44.905[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mZECUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:45.158[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mADAUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:45.409[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36msetup_symbol[0m:[36m140[0m — [1mXMRUSDT: leverage set to 20x isolated[0m
+[32m2026-05-28 07:57:45.409[0m | [1mINFO    [0m | [36mkaren.execution.position_tracker[0m:[36mstartup_reconcile[0m:[36m83[0m — [1mRunning startup reconciliation...[0m
+[32m2026-05-28 07:57:45.802[0m | [1mINFO    [0m | [36mkaren.execution.position_tracker[0m:[36mstartup_reconcile[0m:[36m87[0m — [1mStartup reconciliation complete[0m
+[32m2026-05-28 07:57:45.930[0m | [1mINFO    [0m | [36mkaren.risk.guardrails[0m:[36mnew_day[0m:[36m36[0m — [1mDaily guardrails reset | equity=$30.70 max_loss=5.0% max_trades=50[0m
+[32m2026-05-28 07:57:45.930[0m | [1mINFO    [0m | [36mkaren.exchange.websocket[0m:[36mstart[0m:[36m107[0m — [1mPriceFeed started for 20 symbols[0m
+[32m2026-05-28 07:57:46.385[0m | [34m[1mDEBUG   [0m | [36mkaren.exchange.websocket[0m:[36m_run_with_reconnect[0m:[36m134[0m — [34m[1mConnecting to Binance WS: wss://fstream.binance.com/stream?streams=btcusdt@kline_1m/btcusdt@kline_15m/btcu...[0m
+[32m2026-05-28 07:57:46.684[0m | [1mINFO    [0m | [36mkaren.exchange.websocket[0m:[36m_listen[0m:[36m149[0m — [1mWS connection established[0m
+[32m2026-05-28 07:57:47.290[0m | [1mINFO    [0m | [36m__main__[0m:[36mrun[0m:[36m250[0m — [1mDashboard at http://0.0.0.0:8000[0m
+[32m2026-05-28 07:57:47.292[0m | [1mINFO    [0m | [36m__main__[0m:[36mcandle_loop[0m:[36m87[0m — [1mCandle loop started[0m
+[32m2026-05-28 07:57:47.294[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 135s[0m
+[32m2026-05-28 07:57:47.295[0m | [1mINFO    [0m | [36mkaren.execution.position_tracker[0m:[36mrun[0m:[36m62[0m — [1mPositionTracker started[0m
+[32m2026-05-28 07:57:47.628[0m | [34m[1mDEBUG   [0m | [36mkaren.execution.position_tracker[0m:[36m_save_snapshot[0m:[36m302[0m — [34m[1mEquity snapshot (hourly): $30.70[0m
+[32m2026-05-28 07:57:47.639[0m | [34m[1mDEBUG   [0m | [36mkaren.execution.position_tracker[0m:[36m_save_snapshot[0m:[36m302[0m — [34m[1mEquity snapshot (daily): $30.70[0m
+[32m2026-05-28 07:59:33.309[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 07:59:44.538[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 08:00:07.934[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mETHUSDT MR: ADX=36.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:00:08.852[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mHYPEUSDT MR: ADX=31.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:00:09.260[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAAVEUSDT MR: ADX=38.2 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:00:09.735[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mDOGEUSDT MR: ADX=30.8 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:00:11.581[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mLINKUSDT MR: ADX=34.7 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:00:12.034[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRXUSDT MR: ADX=41.8 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:00:13.274[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1m1000SHIBUSDT MR: ADX=32.1 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:00:13.715[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mUNIUSDT MR: ADX=43.9 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:00:14.628[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRUMPUSDT MR: ADX=37.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:00:15.062[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mZECUSDT MR: ADX=48.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:00:15.911[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 286s[0m
+[32m2026-05-28 08:05:03.223[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mETHUSDT MR: ADX=36.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:05:04.013[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mHYPEUSDT MR: ADX=31.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:05:04.420[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAAVEUSDT MR: ADX=38.1 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:05:04.825[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mDOGEUSDT MR: ADX=30.8 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:05:06.411[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mLINKUSDT MR: ADX=34.7 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:05:07.017[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRXUSDT MR: ADX=41.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:05:08.220[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1m1000SHIBUSDT MR: ADX=32.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:05:08.620[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mUNIUSDT MR: ADX=43.9 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:05:09.391[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRUMPUSDT MR: ADX=37.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:05:09.774[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mZECUSDT MR: ADX=48.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:05:10.560[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 291s[0m
+[32m2026-05-28 08:07:57.942[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 08:10:05.449[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mETHUSDT MR: ADX=36.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:10:06.514[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mHYPEUSDT MR: ADX=31.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:10:06.918[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAAVEUSDT MR: ADX=38.1 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:10:07.349[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mDOGEUSDT MR: ADX=30.8 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:10:08.943[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mLINKUSDT MR: ADX=34.7 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:10:09.364[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRXUSDT MR: ADX=41.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:10:10.606[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1m1000SHIBUSDT MR: ADX=32.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:10:11.011[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mUNIUSDT MR: ADX=43.9 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:10:11.810[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRUMPUSDT MR: ADX=37.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:10:12.206[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mZECUSDT MR: ADX=48.6 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:10:13.040[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 289s[0m
+[32m2026-05-28 08:15:03.534[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mETHUSDT MR: ADX=36.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:15:04.427[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mHYPEUSDT MR: ADX=32.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:15:04.859[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAAVEUSDT MR: ADX=39.6 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:15:05.510[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mDOGEUSDT MR: ADX=30.9 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:15:07.136[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mLINKUSDT MR: ADX=35.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:15:07.569[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRXUSDT MR: ADX=43.9 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:15:08.757[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1m1000SHIBUSDT MR: ADX=31.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:15:09.171[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mUNIUSDT MR: ADX=45.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:15:10.024[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRUMPUSDT MR: ADX=37.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:15:10.420[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mZECUSDT MR: ADX=50.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:15:11.232[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 291s[0m
+[32m2026-05-28 08:20:03.258[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mETHUSDT MR: ADX=37.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:04.104[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mHYPEUSDT MR: ADX=31.7 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:04.508[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAAVEUSDT MR: ADX=40.2 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:05.025[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mDOGEUSDT MR: ADX=32.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:06.882[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mLINKUSDT MR: ADX=36.1 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:07.352[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRXUSDT MR: ADX=43.9 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:07.746[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAVAXUSDT MR: ADX=30.2 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:08.579[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1m1000SHIBUSDT MR: ADX=32.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:08.975[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mUNIUSDT MR: ADX=45.6 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:09.784[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRUMPUSDT MR: ADX=37.9 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:10.241[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mZECUSDT MR: ADX=50.6 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:20:11.020[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 291s[0m
+[32m2026-05-28 08:25:03.356[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mETHUSDT MR: ADX=37.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:04.414[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mHYPEUSDT MR: ADX=31.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:05.055[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAAVEUSDT MR: ADX=40.2 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:05.666[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mDOGEUSDT MR: ADX=32.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:07.444[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mLINKUSDT MR: ADX=36.1 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:08.045[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRXUSDT MR: ADX=44.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:08.435[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAVAXUSDT MR: ADX=30.2 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:09.225[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1m1000SHIBUSDT MR: ADX=32.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:09.618[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mUNIUSDT MR: ADX=45.6 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:10.441[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRUMPUSDT MR: ADX=38.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:10.833[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mZECUSDT MR: ADX=50.6 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:25:11.670[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 290s[0m
+[32m2026-05-28 08:30:04.854[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mBTCUSDT MR: ADX=30.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:05.336[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mETHUSDT MR: ADX=39.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:06.230[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mHYPEUSDT MR: ADX=31.7 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:06.628[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAAVEUSDT MR: ADX=42.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:07.323[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mDOGEUSDT MR: ADX=33.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:08.992[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mLINKUSDT MR: ADX=37.8 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:09.440[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRXUSDT MR: ADX=46.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:09.996[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAVAXUSDT MR: ADX=32.1 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:10.825[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1m1000SHIBUSDT MR: ADX=33.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:11.216[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mUNIUSDT MR: ADX=47.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:12.031[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRUMPUSDT MR: ADX=39.6 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:12.450[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mZECUSDT MR: ADX=52.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:30:13.235[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 289s[0m
+[32m2026-05-28 08:35:02.689[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mBTCUSDT MR: ADX=30.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:03.303[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mETHUSDT MR: ADX=39.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:05.095[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mHYPEUSDT MR: ADX=31.7 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:05.676[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAAVEUSDT MR: ADX=42.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:06.267[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mDOGEUSDT MR: ADX=33.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:08.155[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mLINKUSDT MR: ADX=37.8 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:08.560[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRXUSDT MR: ADX=46.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:08.953[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAVAXUSDT MR: ADX=32.1 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:09.804[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1m1000SHIBUSDT MR: ADX=33.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:10.247[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mUNIUSDT MR: ADX=47.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:11.017[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRUMPUSDT MR: ADX=39.6 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:11.412[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mZECUSDT MR: ADX=52.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:35:12.199[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 290s[0m
+[32m2026-05-28 08:40:00.511[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 08:40:00.817[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 08:40:00.843[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 08:40:00.899[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 08:40:00.930[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 08:40:01.026[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 08:40:02.563[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mBTCUSDT MR: ADX=30.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:02.967[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mETHUSDT MR: ADX=39.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:03.946[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mHYPEUSDT MR: ADX=31.7 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:04.414[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAAVEUSDT MR: ADX=42.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:04.840[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mDOGEUSDT MR: ADX=33.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:05.274[0m | [1mINFO    [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m111[0m — [1mXRPUSDT MR LONG signal | close=1.30 lower_bb=1.30 RSI=32.9 SL=1.30 TP1=1.31[0m
+[32m2026-05-28 08:40:05.457[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XRPUSDT BUY market qty=47.182731929608856 coid=karen-e-xrp-f92346d9 → id=150356534991[0m
+[32m2026-05-28 08:40:05.527[0m | [1mINFO    [0m | [36mkaren.execution.order_manager[0m:[36mopen_position[0m:[36m138[0m — [1mTrade #100 opened: XRPUSDT LONG qty=47.182732 entry≈1.30[0m
+[32m2026-05-28 08:40:05.825[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XRPUSDT SELL stop_market qty=47.182731929608856 coid=karen-sl-xrp-e13e1714 → id=4000001418452458[0m
+[32m2026-05-28 08:40:05.968[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XRPUSDT SELL take_profit_market qty=33.0279123507262 coid=karen-tp1-xrp-ab80f57b → id=4000001418452471[0m
+[32m2026-05-28 08:40:06.108[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XRPUSDT SELL take_profit_market qty=14.154819578882659 coid=karen-tp2-xrp-cd8b77bd → id=4000001418452484[0m
+[32m2026-05-28 08:40:07.137[0m | [34m[1mDEBUG   [0m | [36mkaren.risk.guardrails[0m:[36mrecord_trade_opened[0m:[36m99[0m — [34m[1mTrade count today: 1/50[0m
+[32m2026-05-28 08:40:08.286[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mLINKUSDT MR: ADX=37.8 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:08.687[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRXUSDT MR: ADX=46.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:09.081[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAVAXUSDT MR: ADX=32.1 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:09.886[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1m1000SHIBUSDT MR: ADX=33.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:10.285[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mUNIUSDT MR: ADX=47.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:11.090[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRUMPUSDT MR: ADX=39.6 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:11.493[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mZECUSDT MR: ADX=52.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:40:12.276[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 290s[0m
+[32m2026-05-28 08:40:13.762[0m | [34m[1mDEBUG   [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m121[0m — [34m[1mTrade #100 not on Binance yet (8s old) — waiting[0m
+[32m2026-05-28 08:40:13.762[0m | [33m[1mWARNING [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m142[0m — [33m[1mBinance position not in DB: XRP/USDT:USDT long qty=47.100000 — registering as orphan[0m
+[32m2026-05-28 08:40:44.108[0m | [34m[1mDEBUG   [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m121[0m — [34m[1mTrade #100 not on Binance yet (39s old) — waiting[0m
+[32m2026-05-28 08:41:16.151[0m | [1mINFO    [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m130[0m — [1mTrade #100 detected as closed externally (manual) exit≈1.30[0m
+[32m2026-05-28 08:42:39.638[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 08:42:39.917[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 08:45:02.940[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mBTCUSDT MR: ADX=31.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:03.479[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mETHUSDT MR: ADX=39.0 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:04.468[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mHYPEUSDT MR: ADX=31.8 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:04.851[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAAVEUSDT MR: ADX=42.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:05.285[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mDOGEUSDT MR: ADX=33.9 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:05.723[0m | [1mINFO    [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m111[0m — [1mXRPUSDT MR LONG signal | close=1.30 lower_bb=1.30 RSI=33.5 SL=1.30 TP1=1.31[0m
+[32m2026-05-28 08:45:05.903[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XRPUSDT BUY market qty=47.18269300753036 coid=karen-e-xrp-2c44a65a → id=150356912173[0m
+[32m2026-05-28 08:45:05.927[0m | [1mINFO    [0m | [36mkaren.execution.order_manager[0m:[36mopen_position[0m:[36m138[0m — [1mTrade #102 opened: XRPUSDT LONG qty=47.182693 entry≈1.30[0m
+[32m2026-05-28 08:45:06.213[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XRPUSDT SELL stop_market qty=47.18269300753036 coid=karen-sl-xrp-45b94775 → id=4000001418482971[0m
+[32m2026-05-28 08:45:06.347[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XRPUSDT SELL take_profit_market qty=33.02788510527125 coid=karen-tp1-xrp-65ed53ab → id=4000001418482986[0m
+[32m2026-05-28 08:45:06.480[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XRPUSDT SELL take_profit_market qty=14.15480790225911 coid=karen-tp2-xrp-436069dd → id=4000001418482998[0m
+[32m2026-05-28 08:45:07.436[0m | [34m[1mDEBUG   [0m | [36mkaren.risk.guardrails[0m:[36mrecord_trade_opened[0m:[36m99[0m — [34m[1mTrade count today: 2/50[0m
+[32m2026-05-28 08:45:07.798[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mBNBUSDT MR: ADX=30.4 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:08.620[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mLINKUSDT MR: ADX=39.3 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:09.025[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRXUSDT MR: ADX=47.6 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:09.435[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mAVAXUSDT MR: ADX=33.5 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:10.238[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1m1000SHIBUSDT MR: ADX=34.2 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:10.639[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mUNIUSDT MR: ADX=48.8 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:11.444[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mTRUMPUSDT MR: ADX=40.7 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:11.840[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m85[0m — [34m[1mZECUSDT MR: ADX=54.1 ≥ 30.0 (not ranging)[0m
+[32m2026-05-28 08:45:12.613[0m | [1mINFO    [0m | [36mkaren.strategies.mean_reversion[0m:[36mevaluate[0m:[36m111[0m — [1mXMRUSDT MR LONG signal | close=389.61 lower_bb=388.80 RSI=31.3 SL=387.77 TP1=392.65[0m
+[32m2026-05-28 08:45:12.793[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XMRUSDT BUY market qty=0.1576026197479531 coid=karen-e-xmr-f062be6f → id=14862045770[0m
+[32m2026-05-28 08:45:12.813[0m | [1mINFO    [0m | [36mkaren.execution.order_manager[0m:[36mopen_position[0m:[36m138[0m — [1mTrade #103 opened: XMRUSDT LONG qty=0.157603 entry≈389.61[0m
+[32m2026-05-28 08:45:13.099[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XMRUSDT SELL stop_market qty=0.1576026197479531 coid=karen-sl-xmr-58104c18 → id=4000001418483630[0m
+[32m2026-05-28 08:45:13.237[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XMRUSDT SELL take_profit_market qty=0.11032183382356715 coid=karen-tp1-xmr-1e840a38 → id=4000001418483643[0m
+[32m2026-05-28 08:45:13.376[0m | [1mINFO    [0m | [36mkaren.exchange.binance_client[0m:[36mplace_order[0m:[36m238[0m — [1mOrder placed: XMRUSDT SELL take_profit_market qty=0.047280785924385935 coid=karen-tp2-xmr-c714ecc7 → id=4000001418483654[0m
+[32m2026-05-28 08:45:14.323[0m | [34m[1mDEBUG   [0m | [36mkaren.risk.guardrails[0m:[36mrecord_trade_opened[0m:[36m99[0m — [34m[1mTrade count today: 3/50[0m
+[32m2026-05-28 08:45:14.323[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 5m candle in 288s[0m
+[32m2026-05-28 08:45:18.717[0m | [34m[1mDEBUG   [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m121[0m — [34m[1mTrade #102 not on Binance yet (13s old) — waiting[0m
+[32m2026-05-28 08:45:18.718[0m | [34m[1mDEBUG   [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m121[0m — [34m[1mTrade #103 not on Binance yet (6s old) — waiting[0m
+[32m2026-05-28 08:45:18.718[0m | [33m[1mWARNING [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m142[0m — [33m[1mBinance position not in DB: XMR/USDT:USDT long qty=0.157000 — registering as orphan[0m
+[32m2026-05-28 08:45:49.142[0m | [34m[1mDEBUG   [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m121[0m — [34m[1mTrade #102 not on Binance yet (43s old) — waiting[0m
+[32m2026-05-28 08:45:49.144[0m | [34m[1mDEBUG   [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m121[0m — [34m[1mTrade #103 not on Binance yet (36s old) — waiting[0m
+[32m2026-05-28 08:46:21.382[0m | [1mINFO    [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m130[0m — [1mTrade #102 detected as closed externally (manual) exit≈1.30[0m
+[32m2026-05-28 08:46:23.073[0m | [1mINFO    [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m130[0m — [1mTrade #103 detected as closed externally (manual) exit≈389.61[0m
+[32m2026-05-28 08:47:54.950[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 08:47:55.140[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 08:48:28.300[0m | [1mINFO    [0m | [36mkaren.config[0m:[36m_reload[0m:[36m148[0m — [1mConfig reloaded from .env[0m
+[32m2026-05-28 08:48:28.300[0m | [1mINFO    [0m | [36m__main__[0m:[36mon_config_change[0m:[36m205[0m — [1mStrategy mode changed: mean_reversion → trend_following[0m
+[32m2026-05-28 08:48:28.306[0m | [1mINFO    [0m | [36mkaren.execution.order_manager[0m:[36mcancel_pending_entry_orders[0m:[36m415[0m — [1mCancelled 0 pending entry orders on mode switch[0m
+[32m2026-05-28 08:48:33.717[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 08:48:33.954[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 08:48:33.986[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 08:48:34.070[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 08:48:34.107[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 08:48:34.205[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 08:50:02.756[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mBTCUSDT TF: volume=225 < 1.2×MA=1666[0m
+[32m2026-05-28 08:50:03.119[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mETHUSDT TF: ADX=21.958015633226328 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:03.772[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOTUSDT TF: ADX=14.8021910560175 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:04.200[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mHYPEUSDT TF: ADX=24.116219459861306 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:04.690[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAAVEUSDT TF: ADX=23.124923629252102 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:05.043[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOGEUSDT TF: ADX=20.246220385385925 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:05.888[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXRPUSDT TF: ADX=19.449076187404824 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:06.313[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mBNBUSDT TF: ADX=21.61832058122693 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:06.739[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mALGOUSDT TF: volume=427098 < 1.2×MA=1509624[0m
+[32m2026-05-28 08:50:07.166[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLINKUSDT TF: ADX=19.07308861780223 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:07.564[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRXUSDT TF: volume=452665 < 1.2×MA=1687243[0m
+[32m2026-05-28 08:50:08.062[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAVAXUSDT TF: ADX=17.96997375459123 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:08.476[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLTCUSDT TF: ADX=17.368988153735497 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:08.875[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1m1000SHIBUSDT TF: ADX=22.62586290060886 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:09.326[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mUNIUSDT TF: volume=53683 < 1.2×MA=1064625[0m
+[32m2026-05-28 08:50:09.717[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mPOLUSDT TF: volume=283593 < 1.2×MA=1193468[0m
+[32m2026-05-28 08:50:10.125[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRUMPUSDT TF: volume=62480 < 1.2×MA=457423[0m
+[32m2026-05-28 08:50:10.768[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mZECUSDT TF: volume=13722 < 1.2×MA=18864[0m
+[32m2026-05-28 08:50:11.311[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mADAUSDT TF: ADX=17.033693698890808 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 08:50:11.712[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mXMRUSDT TF: volume=172 < 1.2×MA=1281[0m
+[32m2026-05-28 08:50:11.713[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 15m candle in 590s[0m
+[32m2026-05-28 08:50:57.184[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 08:50:57.350[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 08:58:01.336[0m | [34m[1mDEBUG   [0m | [36mkaren.execution.position_tracker[0m:[36m_save_snapshot[0m:[36m302[0m — [34m[1mEquity snapshot (hourly): $30.96[0m
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+[32m2026-05-28 09:00:04.147[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mBTCUSDT TF: volume=1 < 1.2×MA=1651[0m
+[32m2026-05-28 09:00:04.573[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mETHUSDT TF: ADX=23.583043482246556 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:05.260[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOTUSDT TF: ADX=16.26123104197821 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:05.832[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mHYPEUSDT TF: volume=702 < 1.2×MA=194452[0m
+[32m2026-05-28 09:00:06.931[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAAVEUSDT TF: ADX=24.87841984274417 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:07.372[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOGEUSDT TF: ADX=21.609091359452023 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:08.144[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXRPUSDT TF: ADX=21.009380366495233 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:08.594[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mBNBUSDT TF: ADX=22.752412474088466 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:09.081[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mALGOUSDT TF: volume=108 < 1.2×MA=1520727[0m
+[32m2026-05-28 09:00:09.523[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLINKUSDT TF: ADX=20.457106094938556 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:10.053[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRXUSDT TF: volume=11168 < 1.2×MA=1802035[0m
+[32m2026-05-28 09:00:10.475[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAVAXUSDT TF: ADX=19.078614053983344 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:11.183[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLTCUSDT TF: ADX=18.475753082530847 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:12.020[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1m1000SHIBUSDT TF: ADX=23.87144017353326 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:12.732[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mUNIUSDT TF: volume=11124 < 1.2×MA=1107636[0m
+[32m2026-05-28 09:00:13.140[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mPOLUSDT TF: volume=48403 < 1.2×MA=1193916[0m
+[32m2026-05-28 09:00:13.570[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRUMPUSDT TF: volume=9072 < 1.2×MA=466497[0m
+[32m2026-05-28 09:00:14.189[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mZECUSDT TF: volume=231 < 1.2×MA=19197[0m
+[32m2026-05-28 09:00:14.621[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mADAUSDT TF: ADX=17.360494656694758 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:15.346[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXMRUSDT TF: ADX=24.691506126871055 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:00:15.347[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 15m candle in 887s[0m
+[32m2026-05-28 09:15:02.677[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mBTCUSDT TF: volume=728 < 1.2×MA=1688[0m
+[32m2026-05-28 09:15:03.150[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mETHUSDT TF: ADX=23.583043482246556 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:03.584[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOTUSDT TF: ADX=16.26123104197821 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:04.359[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mHYPEUSDT TF: volume=102839 < 1.2×MA=199559[0m
+[32m2026-05-28 09:15:04.937[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAAVEUSDT TF: ADX=24.87841984274417 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:05.348[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOGEUSDT TF: ADX=21.609091359452023 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:05.965[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXRPUSDT TF: ADX=21.009380366495233 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:06.426[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mBNBUSDT TF: ADX=22.752412474088466 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:06.947[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mALGOUSDT TF: volume=1457961 < 1.2×MA=1593619[0m
+[32m2026-05-28 09:15:07.447[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLINKUSDT TF: ADX=20.457106094938556 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:07.879[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRXUSDT TF: volume=1743 < 1.2×MA=1807043[0m
+[32m2026-05-28 09:15:08.275[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAVAXUSDT TF: ADX=18.898186925048186 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:08.744[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLTCUSDT TF: ADX=18.475753082530847 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:09.180[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1m1000SHIBUSDT TF: ADX=23.87144017353326 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:09.589[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mUNIUSDT TF: volume=135 < 1.2×MA=1116423[0m
+[32m2026-05-28 09:15:10.026[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mPOLUSDT TF: volume=1069 < 1.2×MA=1217672[0m
+[32m2026-05-28 09:15:10.436[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRUMPUSDT TF: volume=6917 < 1.2×MA=470905[0m
+[32m2026-05-28 09:15:10.909[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mZECUSDT TF: volume=300 < 1.2×MA=19743[0m
+[32m2026-05-28 09:15:11.313[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mADAUSDT TF: ADX=17.360494656694758 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:11.728[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXMRUSDT TF: ADX=24.691506126871055 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:15:11.730[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 15m candle in 890s[0m
+[32m2026-05-28 09:30:02.567[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mBTCUSDT TF: volume=970 < 1.2×MA=1714[0m
+[32m2026-05-28 09:30:02.979[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mETHUSDT TF: ADX=23.58304348224656 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:03.386[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOTUSDT TF: ADX=16.26123104197821 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:03.897[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mHYPEUSDT TF: volume=184073 < 1.2×MA=202168[0m
+[32m2026-05-28 09:30:04.309[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAAVEUSDT TF: ADX=24.87841984274417 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:04.825[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOGEUSDT TF: ADX=21.5905382679446 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:05.211[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXRPUSDT TF: ADX=21.009380366495233 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:05.758[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mBNBUSDT TF: ADX=22.82544831979806 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:06.230[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mALGOUSDT TF: volume=30715 < 1.2×MA=1537113[0m
+[32m2026-05-28 09:30:06.636[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLINKUSDT TF: ADX=20.457106094938556 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:07.140[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRXUSDT TF: volume=10733 < 1.2×MA=1691902[0m
+[32m2026-05-28 09:30:07.829[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAVAXUSDT TF: ADX=18.898186925048186 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:08.283[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLTCUSDT TF: ADX=18.475753082530847 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:08.760[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1m1000SHIBUSDT TF: ADX=23.87144017353326 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:09.179[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mUNIUSDT TF: volume=3662 < 1.2×MA=1080949[0m
+[32m2026-05-28 09:30:09.583[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mPOLUSDT TF: volume=3470 < 1.2×MA=1148242[0m
+[32m2026-05-28 09:30:09.981[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRUMPUSDT TF: volume=3568 < 1.2×MA=354063[0m
+[32m2026-05-28 09:30:10.384[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mZECUSDT TF: volume=153 < 1.2×MA=20335[0m
+[32m2026-05-28 09:30:10.794[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mADAUSDT TF: ADX=17.360494656694758 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:11.198[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXMRUSDT TF: ADX=24.691506126871055 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:30:11.199[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 15m candle in 891s[0m
+[32m2026-05-28 09:45:03.727[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mBTCUSDT TF: volume=0 < 1.2×MA=1316[0m
+[32m2026-05-28 09:45:04.506[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mETHUSDT TF: ADX=23.58304348224656 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:05.231[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOTUSDT TF: ADX=16.26123104197821 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:05.636[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mHYPEUSDT TF: volume=160 < 1.2×MA=193659[0m
+[32m2026-05-28 09:45:06.079[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAAVEUSDT TF: ADX=24.87841984274417 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:06.444[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOGEUSDT TF: ADX=21.5905382679446 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:06.789[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXRPUSDT TF: ADX=21.009380366495233 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:07.207[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mBNBUSDT TF: ADX=23.03719672549399 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:07.610[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mALGOUSDT TF: volume=8251 < 1.2×MA=1519477[0m
+[32m2026-05-28 09:45:08.012[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLINKUSDT TF: ADX=20.457106094938556 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:08.449[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRXUSDT TF: volume=6368 < 1.2×MA=1664682[0m
+[32m2026-05-28 09:45:08.863[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAVAXUSDT TF: ADX=18.898186925048186 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:09.260[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLTCUSDT TF: ADX=18.475753082530847 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:09.661[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1m1000SHIBUSDT TF: ADX=23.87144017353326 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:10.077[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mUNIUSDT TF: volume=3947 < 1.2×MA=1068506[0m
+[32m2026-05-28 09:45:10.470[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mPOLUSDT TF: volume=9890 < 1.2×MA=929497[0m
+[32m2026-05-28 09:45:10.862[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRUMPUSDT TF: volume=1444 < 1.2×MA=315387[0m
+[32m2026-05-28 09:45:11.252[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mZECUSDT TF: volume=104 < 1.2×MA=21400[0m
+[32m2026-05-28 09:45:11.640[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mADAUSDT TF: ADX=17.360494656694758 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:12.046[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXMRUSDT TF: ADX=24.691506126871055 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 09:45:12.047[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 15m candle in 890s[0m
+[32m2026-05-28 09:56:36.906[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 09:56:37.070[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 09:58:15.411[0m | [34m[1mDEBUG   [0m | [36mkaren.execution.position_tracker[0m:[36m_save_snapshot[0m:[36m302[0m — [34m[1mEquity snapshot (hourly): $30.97[0m
+[32m2026-05-28 10:00:10.045[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mBTCUSDT TF: volume=13 < 1.2×MA=1132[0m
+[32m2026-05-28 10:00:10.441[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mETHUSDT TF: volume=74 < 1.2×MA=33988[0m
+[32m2026-05-28 10:00:10.849[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOTUSDT TF: ADX=17.616055094650093 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:00:11.285[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mHYPEUSDT TF: volume=3947 < 1.2×MA=200428[0m
+[32m2026-05-28 10:00:11.671[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mAAVEUSDT TF: volume=167 < 1.2×MA=7325[0m
+[32m2026-05-28 10:00:12.080[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOGEUSDT TF: ADX=22.838829195935677 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:00:12.513[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXRPUSDT TF: ADX=22.458219585912342 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:00:12.963[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mBNBUSDT TF: ADX=24.354724555379633 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:00:13.365[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mALGOUSDT TF: volume=31792 < 1.2×MA=1486985[0m
+[32m2026-05-28 10:00:13.770[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLINKUSDT TF: ADX=21.74226302309691 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:00:14.178[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRXUSDT TF: volume=24968 < 1.2×MA=1636512[0m
+[32m2026-05-28 10:00:14.580[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAVAXUSDT TF: ADX=19.76010079156727 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:00:14.977[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLTCUSDT TF: ADX=19.503471890450868 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:00:15.375[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1m1000SHIBUSDT TF: volume=121529 < 1.2×MA=50636381[0m
+[32m2026-05-28 10:00:15.789[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mUNIUSDT TF: volume=5560 < 1.2×MA=1066459[0m
+[32m2026-05-28 10:00:16.184[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mPOLUSDT TF: volume=5747 < 1.2×MA=868496[0m
+[32m2026-05-28 10:00:16.580[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRUMPUSDT TF: volume=9226 < 1.2×MA=289608[0m
+[32m2026-05-28 10:00:16.964[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mZECUSDT TF: volume=956 < 1.2×MA=23016[0m
+[32m2026-05-28 10:00:17.386[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mADAUSDT TF: ADX=17.66394460630574 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:00:17.795[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXMRUSDT TF: ADX=23.622101864537637 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:00:17.795[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 15m candle in 884s[0m
+[32m2026-05-28 10:11:19.662[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 10:11:19.866[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 10:15:04.635[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mBTCUSDT TF: volume=0 < 1.2×MA=1038[0m
+[32m2026-05-28 10:15:05.740[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOTUSDT TF: ADX=17.924539952956803 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:15:06.157[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mHYPEUSDT TF: volume=129 < 1.2×MA=201812[0m
+[32m2026-05-28 10:15:06.600[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mAAVEUSDT TF: volume=29 < 1.2×MA=7435[0m
+[32m2026-05-28 10:15:07.008[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOGEUSDT TF: ADX=23.08608259452444 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:15:07.434[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXRPUSDT TF: ADX=22.62730839653306 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:15:07.979[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mBNBUSDT TF: ADX=24.451889421146042 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:15:08.382[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mALGOUSDT TF: volume=7630 < 1.2×MA=1475371[0m
+[32m2026-05-28 10:15:08.793[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLINKUSDT TF: ADX=21.937929900955147 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:15:09.211[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRXUSDT TF: volume=644 < 1.2×MA=1707601[0m
+[32m2026-05-28 10:15:09.603[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAVAXUSDT TF: ADX=19.911609127536906 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:15:10.004[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLTCUSDT TF: ADX=19.628348965368065 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:15:10.414[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1m1000SHIBUSDT TF: volume=96596 < 1.2×MA=49271205[0m
+[32m2026-05-28 10:15:10.805[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mUNIUSDT TF: volume=8342 < 1.2×MA=1075055[0m
+[32m2026-05-28 10:15:11.200[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mPOLUSDT TF: volume=297 < 1.2×MA=876438[0m
+[32m2026-05-28 10:15:11.596[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRUMPUSDT TF: volume=126 < 1.2×MA=291909[0m
+[32m2026-05-28 10:15:11.998[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mZECUSDT TF: volume=22 < 1.2×MA=23504[0m
+[32m2026-05-28 10:15:12.408[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mADAUSDT TF: ADX=17.99959628758928 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:15:12.819[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXMRUSDT TF: ADX=23.785176968884723 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:15:12.820[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 15m candle in 889s[0m
+[32m2026-05-28 10:17:59.188[0m | [1mINFO    [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m130[0m — [1mTrade #101 detected as closed externally (manual) exit≈1.30[0m
+[32m2026-05-28 10:19:20.429[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 10:19:20.616[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 10:19:20.800[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 10:19:20.947[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 10:30:02.836[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mBTCUSDT TF: volume=1 < 1.2×MA=1613[0m
+[32m2026-05-28 10:30:03.935[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOTUSDT TF: ADX=18.610676674932353 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:30:04.376[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mHYPEUSDT TF: volume=584 < 1.2×MA=204893[0m
+[32m2026-05-28 10:30:05.399[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOGEUSDT TF: ADX=24.012927485303294 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:30:05.911[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXRPUSDT TF: ADX=23.46302467569669 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:30:06.358[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mBNBUSDT TF: volume=0 < 1.2×MA=6192[0m
+[32m2026-05-28 10:30:07.222[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLINKUSDT TF: ADX=22.83382131074604 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:30:07.695[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRXUSDT TF: volume=6931 < 1.2×MA=1796083[0m
+[32m2026-05-28 10:30:08.107[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAVAXUSDT TF: ADX=20.92756830097906 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:30:08.595[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLTCUSDT TF: ADX=20.76837863351394 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:30:08.997[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1m1000SHIBUSDT TF: volume=1765504 < 1.2×MA=78861467[0m
+[32m2026-05-28 10:30:09.401[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mUNIUSDT TF: volume=19226 < 1.2×MA=1134883[0m
+[32m2026-05-28 10:30:09.797[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mPOLUSDT TF: volume=75200 < 1.2×MA=1093373[0m
+[32m2026-05-28 10:30:10.188[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRUMPUSDT TF: volume=14346 < 1.2×MA=469110[0m
+[32m2026-05-28 10:30:10.596[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mZECUSDT TF: volume=49 < 1.2×MA=25759[0m
+[32m2026-05-28 10:30:11.033[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mADAUSDT TF: ADX=19.13177155499476 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:30:11.454[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXMRUSDT TF: ADX=23.18827554745441 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:30:11.454[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 15m candle in 891s[0m
+[32m2026-05-28 10:34:41.101[0m | [1mINFO    [0m | [36mkaren.execution.position_tracker[0m:[36m_reconcile_inner[0m:[36m130[0m — [1mTrade #104 detected as closed externally (manual) exit≈389.61[0m
+[32m2026-05-28 10:40:21.510[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 10:40:21.713[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 10:40:27.727[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 10:40:28.199[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 10:40:28.435[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mdisconnect[0m:[36m29[0m — [34m[1mWS client disconnected (0 total)[0m
+[32m2026-05-28 10:40:28.595[0m | [34m[1mDEBUG   [0m | [36mkaren.dashboard.ws[0m:[36mconnect[0m:[36m24[0m — [34m[1mWS client connected (1 total)[0m
+[32m2026-05-28 10:45:03.584[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOTUSDT TF: ADX=18.610676674932353 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:45:08.490[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mHYPEUSDT TF: volume=1095 < 1.2×MA=189685[0m
+[32m2026-05-28 10:45:08.890[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mAAVEUSDT TF: volume=26 < 1.2×MA=10114[0m
+[32m2026-05-28 10:45:09.291[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mDOGEUSDT TF: ADX=24.012927485303294 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:45:09.778[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXRPUSDT TF: ADX=23.508666906744576 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:45:10.182[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mBNBUSDT TF: volume=180 < 1.2×MA=6625[0m
+[32m2026-05-28 10:45:10.586[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mALGOUSDT TF: volume=4277 < 1.2×MA=1924919[0m
+[32m2026-05-28 10:45:10.989[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLINKUSDT TF: ADX=22.83382131074604 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:45:11.382[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRXUSDT TF: volume=53457 < 1.2×MA=1842754[0m
+[32m2026-05-28 10:45:11.783[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mAVAXUSDT TF: ADX=20.92756830097906 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:45:12.181[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mLTCUSDT TF: ADX=20.76837863351394 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:45:12.583[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1m1000SHIBUSDT TF: volume=1893826 < 1.2×MA=85093924[0m
+[32m2026-05-28 10:45:12.995[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mUNIUSDT TF: volume=13373 < 1.2×MA=1158830[0m
+[32m2026-05-28 10:45:13.401[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mPOLUSDT TF: volume=52950 < 1.2×MA=1133181[0m
+[32m2026-05-28 10:45:13.804[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mTRUMPUSDT TF: volume=7653 < 1.2×MA=494601[0m
+[32m2026-05-28 10:45:14.193[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m115[0m — [34m[1mZECUSDT TF: volume=511 < 1.2×MA=26716[0m
+[32m2026-05-28 10:45:14.597[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mADAUSDT TF: ADX=19.13177155499476 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:45:14.997[0m | [34m[1mDEBUG   [0m | [36mkaren.strategies.trend_following[0m:[36mevaluate[0m:[36m83[0m — [34m[1mXMRUSDT TF: ADX=23.320567733285603 ≤ 25.0 (not trending)[0m
+[32m2026-05-28 10:45:14.998[0m | [34m[1mDEBUG   [0m | [36m__main__[0m:[36m_wait_for_candle_close[0m:[36m68[0m — [34m[1mNext 15m candle in 887s[0m

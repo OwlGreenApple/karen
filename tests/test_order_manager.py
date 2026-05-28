@@ -49,6 +49,7 @@ def _order(
         quantity=0.01,
         filled=filled,
         price=price,
+        average_price=price,
         stop_price=None,
         timestamp=datetime.now(tz=UTC),
     )
@@ -62,6 +63,7 @@ def mock_client() -> MagicMock:
     c.cancel_all_orders = AsyncMock()
     c.fetch_order = AsyncMock(return_value=_order(status="open"))
     c.fetch_open_orders = AsyncMock(return_value=[])
+    c.get_min_qty = MagicMock(return_value=0.0)
     return c
 
 

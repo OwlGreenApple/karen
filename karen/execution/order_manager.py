@@ -89,6 +89,15 @@ class OrderManager:
             )
             return None
 
+        # Check exchange minimum quantity (e.g. BTC min=0.001)
+        min_qty = self._client.get_min_qty(signal.symbol)
+        if min_qty > 0 and qty < min_qty:
+            logger.warning(
+                f"{signal.symbol}: computed qty={qty:.6f} below exchange minimum "
+                f"{min_qty} (equity too small for this pair) — skipping"
+            )
+            return None
+
         entry_side = "buy" if signal.side == "long" else "sell"
         exit_side = "sell" if signal.side == "long" else "buy"
 

@@ -66,6 +66,7 @@ def _make_client(
     c.cancel_all_orders = AsyncMock()
     c.fetch_open_orders = AsyncMock(return_value=[])
     c.fetch_ohlcv = AsyncMock(return_value=make_ohlcv())
+    c.get_min_qty = MagicMock(return_value=0.0)
     return c
 
 
@@ -73,7 +74,7 @@ def _open_order() -> OrderInfo:
     return OrderInfo(
         id="ord-1", client_order_id="karen-e-btc-abc123", symbol="BTCUSDT",
         side="buy", type="market", status="open",
-        quantity=0.1, filled=0.0, price=None, stop_price=None,
+        quantity=0.1, filled=0.0, price=None, average_price=None, stop_price=None,
         timestamp=datetime.now(tz=UTC),
     )
 
@@ -94,6 +95,7 @@ def _make_placed_order(**kwargs) -> OrderInfo:
         quantity=kwargs.get("quantity", 0.1),
         filled=kwargs.get("quantity", 0.1),
         price=kwargs.get("price"),
+        average_price=kwargs.get("price"),
         stop_price=kwargs.get("stop_price"),
         timestamp=datetime.now(tz=UTC),
     )
@@ -427,7 +429,7 @@ async def test_strategy_mode_switch_cancels_pending_entries(default_settings, db
     client.fetch_order.return_value = OrderInfo(
         id="ord-entry", client_order_id="karen-e-btc-abc", symbol="BTCUSDT",
         side="buy", type="limit", status="open",
-        quantity=0.1, filled=0.0, price=40_000.0, stop_price=None,
+        quantity=0.1, filled=0.0, price=40_000.0, average_price=None, stop_price=None,
         timestamp=datetime.now(tz=UTC),
     )
 

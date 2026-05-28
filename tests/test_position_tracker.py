@@ -39,7 +39,7 @@ def _make_order(status: str = "open", price: float | None = None) -> OrderInfo:
         id="ord-1", client_order_id="k-1", symbol="BTCUSDT",
         side="sell", type="stop_market", status=status,
         quantity=0.1, filled=0.0 if status == "open" else 0.1,
-        price=price, stop_price=39_500.0,
+        price=price, average_price=price, stop_price=39_500.0,
         timestamp=datetime.now(tz=UTC),
     )
 

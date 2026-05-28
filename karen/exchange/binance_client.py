@@ -45,6 +45,7 @@ class OrderInfo:
     quantity: float
     filled: float
     price: float | None
+    average_price: float | None  # actual fill price (used for market/stop_market orders)
     stop_price: float | None
     timestamp: datetime
 
@@ -144,6 +145,13 @@ class BinanceClient:
                 raise
 
     # ── Market data ────────────────────────────────────────────────────────
+
+    def get_min_qty(self, symbol: str) -> float:
+        """Return minimum order quantity for a symbol (0 if unknown)."""
+        for market in self.exchange.markets.values():
+            if market.get("id") == symbol:
+                return market.get("limits", {}).get("amount", {}).get("min") or 0.0
+        return 0.0
 
     async def fetch_ohlcv(
         self,
@@ -253,6 +261,31 @@ class BinanceClient:
         raw_list = await _fetch_open_orders_with_retry(self.exchange, symbol)
         return [_parse_order(o) for o in raw_list]
 
+    async def fetch_last_close_price(
+        self, symbol: str, since_ms: int | None = None
+    ) -> float | None:
+        """Return the price of the most recent closing trade for a symbol.
+
+        Uses trade fill history (fapiPrivateGetUserTrades) as a reliable
+        fallback when SL/TP orders have already been cancelled by Binance.
+        """
+        try:
+            params: dict[str, Any] = {"limit": 20}
+            if since_ms is not None:
+                params["startTime"] = since_ms
+            raw_list: list[dict[str, Any]] = await _fetch_my_trades_with_retry(
+                self.exchange, symbol, params
+            )
+            if not raw_list:
+                return None
+            # Most recent trade by timestamp
+            latest = max(raw_list, key=lambda t: t.get("time") or t.get("timestamp") or 0)
+            price = float(latest.get("price") or 0)
+            return price if price > 0 else None
+        except Exception:
+            logger.debug(f"fetch_last_close_price({symbol}) failed — skipping")
+            return None
+
 
 # ─── Tenacity-wrapped helpers (module-level so they can be patched in tests) ──
 
@@ -327,6 +360,15 @@ async def _fetch_open_orders_with_retry(
     return await exchange.fetch_open_orders(symbol)  # type: ignore[return-value]
 
 
+@_make_retry("fetch_my_trades")
+async def _fetch_my_trades_with_retry(
+    exchange: ccxt.binanceusdm, symbol: str, params: dict[str, Any]
+) -> list[dict[str, Any]]:
+    # Use raw fapiPrivateGetUserTrades for reliable fill data
+    params["symbol"] = exchange.market_id(symbol)
+    return await exchange.fapiPrivateGetUserTrades(params)  # type: ignore[return-value]
+
+
 # ─── Utilities ────────────────────────────────────────────────────────────────
 
 
@@ -352,6 +394,7 @@ def _parse_order(raw: dict[str, Any]) -> OrderInfo:
         quantity=float(raw.get("amount") or 0),
         filled=float(raw.get("filled") or 0),
         price=float(raw["price"]) if raw.get("price") else None,
+        average_price=float(raw["average"]) if raw.get("average") else None,
         stop_price=float(raw["stopPrice"]) if raw.get("stopPrice") else None,
         timestamp=ts,
     )

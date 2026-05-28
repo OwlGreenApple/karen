@@ -8,6 +8,7 @@ function pnlColor(pnl) {
 function fmt(ts) {
   if (!ts) return '—'
   return new Date(ts).toLocaleString('en-US', {
+    timeZone: 'Asia/Jakarta',
     month: 'short', day: 'numeric',
     hour: '2-digit', minute: '2-digit', hour12: false,
   })
