@@ -223,3 +223,32 @@ def test_load_fresh_settings_reads_disk(tmp_path: Path, monkeypatch) -> None:
     write_env(env_file, "MAX_CONCURRENT_POSITIONS=4\n")
     s2 = _load_fresh_settings()
     assert s2.max_concurrent_positions == 4
+
+
+# ─── TRADING_POSITION ────────────────────────────────────────────────────────
+
+
+@pytest.mark.parametrize(
+    ("raw", "long_ok", "short_ok"),
+    [("short", False, True), ("LONG", True, False), ("", True, True), ("both", True, True)],
+)
+def test_trading_position_filter(tmp_path: Path, raw, long_ok, short_ok) -> None:
+    env = tmp_path / ".env"
+    write_env(env, f"TRADING_POSITION={raw}\n")
+    s = Settings(_env_file=str(env))
+    assert s.side_allowed("long") is long_ok
+    assert s.side_allowed("short") is short_ok
+
+
+def test_trading_position_invalid(tmp_path: Path) -> None:
+    env = tmp_path / ".env"
+    write_env(env, "TRADING_POSITION=sideways\n")
+    with pytest.raises(ValueError):
+        Settings(_env_file=str(env))
+
+
+def test_trading_position_missing_defaults_to_both(tmp_path: Path) -> None:
+    env = tmp_path / ".env"
+    write_env(env, "SYMBOLS=BTCUSDT\n")
+    s = Settings(_env_file=str(env))
+    assert s.side_allowed("long") and s.side_allowed("short")

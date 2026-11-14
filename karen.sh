@@ -83,8 +83,9 @@ cmd_stop() {
 cmd_status() {
   local pid
   pid=$(get_pid)
-  local strategy trading testnet
+  local strategy trading testnet position
   strategy=$(get_env_var STRATEGY_MODE)
+  position=$(get_env_var TRADING_POSITION || true)
   trading=$(get_env_var TRADING_ENABLED)
   testnet=$(get_env_var BINANCE_TESTNET)
 
@@ -96,6 +97,7 @@ cmd_status() {
   fi
   echo "  Strategy : $strategy"
   echo "  Trading  : $trading"
+  echo "  Position : ${position:-both}"
   echo "  Testnet  : $testnet"
   echo "──────────────────────────────"
 }

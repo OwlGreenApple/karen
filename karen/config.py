@@ -25,6 +25,12 @@ class StrategyMode(StrEnum):
     SCALP_1M = "scalp_1m"
 
 
+class TradingPosition(StrEnum):
+    LONG = "long"
+    SHORT = "short"
+    BOTH = "both"
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(ENV_PATH),
@@ -41,6 +47,8 @@ class Settings(BaseSettings):
     # Master switches
     trading_enabled: bool = Field(default=False)
     strategy_mode: StrategyMode = Field(default=StrategyMode.MEAN_REVERSION)
+    # Allowed entry direction: long | short | empty/both (hot-reloadable)
+    trading_position: TradingPosition = Field(default=TradingPosition.BOTH)
 
     # Trading pairs
     symbols: str = Field(
@@ -99,6 +107,21 @@ class Settings(BaseSettings):
         if not parts:
             raise ValueError("SYMBOLS must contain at least one trading pair")
         return ",".join(parts)
+
+    @field_validator("trading_position", mode="before")
+    @classmethod
+    def validate_trading_position(cls, v: Any) -> Any:
+        if v is None or (isinstance(v, str) and v.strip() == ""):
+            return TradingPosition.BOTH
+        if isinstance(v, str):
+            v = v.strip().lower()
+            if v not in {"long", "short", "both"}:
+                raise ValueError("TRADING_POSITION must be long, short, or empty (both)")
+        return v
+
+    def side_allowed(self, side: str) -> bool:
+        """True if TRADING_POSITION permits opening a position on this side."""
+        return self.trading_position == TradingPosition.BOTH or self.trading_position == side
 
     @property
     def symbol_list(self) -> list[str]:

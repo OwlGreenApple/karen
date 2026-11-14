@@ -125,6 +125,13 @@ async def candle_loop(
             if signal is None:
                 continue
 
+            if not settings.side_allowed(signal.side):
+                logger.info(
+                    f"Signal {symbol} {signal.side.upper()} — ignored "
+                    f"(TRADING_POSITION={settings.trading_position.value})"
+                )
+                continue
+
             if not settings.trading_enabled:
                 logger.info(
                     f"Signal {symbol} {signal.side.upper()} — "

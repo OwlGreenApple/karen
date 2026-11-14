@@ -444,3 +444,39 @@ async def test_tf_real_indicators_trending_market_produces_valid_signal_or_none(
     strat = TrendFollowingStrategy(default_settings)
     signal = await strat.evaluate("BTCUSDT", df_15m, df_1h)
     assert signal is None or isinstance(signal, Signal)
+
+
+# ─── MR confidence ───────────────────────────────────────────────────────────
+
+from karen.strategies.mean_reversion import _mr_confidence  # noqa: E402
+
+
+@pytest.mark.asyncio
+async def test_mr_signal_carries_confidence(default_settings):
+    ind_15m = make_ind15m(adx=10.0)
+    ind_5m = make_ind5m_mr(
+        close=40_100.0, bb_lower=39_500.0, bb_middle=40_500.0, bb_upper=41_500.0,
+        rsi=32.0, atr=80.0, prev_low=39_470.0,
+    )
+    strat = make_mr(default_settings, ind_5m=ind_5m, ind_15m=ind_15m)
+    signal = await strat.evaluate("BTCUSDT", dummy_df(), dummy_df())
+    assert signal is not None
+    assert 0.0 < signal.confidence <= 1.0
+
+
+def test_mr_confidence_stronger_setup_scores_higher():
+    # short: weak = barely overbought, choppy-ish ADX, small overshoot, TP close
+    weak = _mr_confidence("short", 19.0, 20.0, 71.0, 70.0,
+                          100.05, 100.0, 99.9, 99.5, 99.98, 0.1)
+    # strong = deep overbought, very low ADX, big overshoot, TP far, wide bands
+    strong = _mr_confidence("short", 4.0, 20.0, 88.0, 70.0,
+                            101.0, 100.0, 97.0, 94.0, 99.5, 0.8)
+    assert 0.0 <= weak < 0.3
+    assert strong > 0.8
+    assert strong <= 1.0
+
+
+def test_mr_confidence_symmetric_for_long():
+    short = _mr_confidence("short", 10.0, 20.0, 80.0, 70.0, 101.0, 100.0, 98.0, 96.0, 99.6, 0.5)
+    long_ = _mr_confidence("long", 10.0, 20.0, 20.0, 30.0, 95.0, 96.0, 98.0, 100.0, 96.4, 0.5)
+    assert short == pytest.approx(long_, rel=0.05)
