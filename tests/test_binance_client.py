@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import ccxt
 import pytest
 
 from karen.config import Settings, StrategyMode
@@ -45,6 +46,8 @@ def mock_exchange() -> MagicMock:
     ex.fetch_order = AsyncMock()
     ex.fetch_open_orders = AsyncMock()
     ex.close = AsyncMock()
+    ex.parse_timeframe = MagicMock(side_effect=ccxt.Exchange.parse_timeframe)
+    ex.milliseconds = MagicMock(return_value=2_000_000_000_000)  # far future: all candles closed
     return ex
 
 
@@ -182,7 +185,26 @@ async def test_fetch_ohlcv_calls_correct_params(
 ) -> None:
     mock_exchange.fetch_ohlcv.return_value = []
     await client.fetch_ohlcv("ETHUSDT", "1h", limit=100)
-    mock_exchange.fetch_ohlcv.assert_called_once_with("ETHUSDT", "1h", limit=100)
+    # one extra candle requested to compensate for dropping the forming one
+    mock_exchange.fetch_ohlcv.assert_called_once_with("ETHUSDT", "1h", limit=101)
+
+
+@pytest.mark.asyncio
+async def test_fetch_ohlcv_drops_unclosed_candle(
+    client: BinanceClient, mock_exchange: MagicMock
+) -> None:
+    raw = [
+        [1_700_000_000_000, 1, 1, 1, 1, 100.0],  # closes at +900_000
+        [1_700_000_900_000, 1, 1, 1, 1, 120.0],  # closes at 1_700_001_800_000
+        [1_700_001_800_000, 1, 1, 1, 1, 3.0],    # still forming
+    ]
+    mock_exchange.fetch_ohlcv.return_value = raw
+    mock_exchange.milliseconds.return_value = 1_700_001_802_000  # 2s after close
+
+    df = await client.fetch_ohlcv("BTCUSDT", "15m", limit=2)
+
+    assert len(df) == 2
+    assert df["volume"].iloc[-1] == pytest.approx(120.0)
 
 
 # ─── fetch_equity ─────────────────────────────────────────────────────────────
@@ -439,3 +461,22 @@ def test_parse_order_normalises_cancelled_spelling() -> None:
     }
     order = _parse_order(raw)
     assert order.status == "canceled"
+
+
+@pytest.mark.asyncio
+async def test_fetch_positions_uses_exchange_id_not_unified_symbol(
+    client: BinanceClient, mock_exchange: MagicMock
+) -> None:
+    """DB/SYMBOLS use 'BNBUSDC'; ccxt reports 'BNB/USDC:USDC' — must normalise."""
+    mock_exchange.fetch_positions.return_value = [
+        {
+            "symbol": "BNB/USDC:USDC",
+            "info": {"symbol": "BNBUSDC"},
+            "contracts": 0.01,
+            "side": "short",
+            "entryPrice": 621.44,
+            "leverage": "5",
+        },
+    ]
+    positions = await client.fetch_positions()
+    assert positions[0].symbol == "BNBUSDC"

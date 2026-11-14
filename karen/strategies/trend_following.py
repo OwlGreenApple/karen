@@ -131,9 +131,14 @@ class TrendFollowingStrategy(AbstractStrategy):
             if pullback_to_ema and macd_turned_positive:
                 sl = _swing_sl(df_lower, "long", atr, self._SWING_LOOKBACK)  # type: ignore[arg-type]
                 tp1 = curr_close + 2.5 * atr  # type: ignore[operator]
+                conf = _confidence(
+                    adx_1h, s.tf_adx_min, vol_curr, vol_ma, s.tf_volume_multiplier,  # type: ignore[arg-type]
+                    ema_mid, ema_slow, macd_hist_curr, atr, curr_close, sl,  # type: ignore[arg-type]
+                )
                 logger.info(
                     f"{symbol} TF LONG signal | close={curr_close:.2f} "
-                    f"EMA21={ema_fast:.2f} MACD_h={macd_hist_curr:.4f} SL={sl:.2f} TP1={tp1:.2f}"
+                    f"EMA21={ema_fast:.2f} MACD_h={macd_hist_curr:.4f} SL={sl:.2f} TP1={tp1:.2f} "
+                    f"conf={conf:.2f}"
                 )
                 return Signal(
                     symbol=symbol,
@@ -146,6 +151,7 @@ class TrendFollowingStrategy(AbstractStrategy):
                     tp2_price=None,  # trailing stop (chandelier exit)
                     atr=atr,
                     trail_atr_mult=3.0,
+                    confidence=conf,
                     reason="TF_LONG: 1h uptrend + EMA21 pullback + MACD histogram flipped + volume",
                 )
 
@@ -163,9 +169,14 @@ class TrendFollowingStrategy(AbstractStrategy):
             if rally_to_ema and macd_turned_negative:
                 sl = _swing_sl(df_lower, "short", atr, self._SWING_LOOKBACK)  # type: ignore[arg-type]
                 tp1 = curr_close - 2.5 * atr  # type: ignore[operator]
+                conf = _confidence(
+                    adx_1h, s.tf_adx_min, vol_curr, vol_ma, s.tf_volume_multiplier,  # type: ignore[arg-type]
+                    ema_mid, ema_slow, macd_hist_curr, atr, curr_close, sl,  # type: ignore[arg-type]
+                )
                 logger.info(
                     f"{symbol} TF SHORT signal | close={curr_close:.2f} "
-                    f"EMA21={ema_fast:.2f} MACD_h={macd_hist_curr:.4f} SL={sl:.2f} TP1={tp1:.2f}"
+                    f"EMA21={ema_fast:.2f} MACD_h={macd_hist_curr:.4f} SL={sl:.2f} TP1={tp1:.2f} "
+                    f"conf={conf:.2f}"
                 )
                 return Signal(
                     symbol=symbol,
@@ -178,6 +189,7 @@ class TrendFollowingStrategy(AbstractStrategy):
                     tp2_price=None,
                     atr=atr,
                     trail_atr_mult=3.0,
+                    confidence=conf,
                     reason="TF_SHORT: downtrend + EMA21 rejection + MACD flipped + volume",
                 )
 
@@ -185,6 +197,42 @@ class TrendFollowingStrategy(AbstractStrategy):
 
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
+
+
+def _clamp01(x: float) -> float:
+    return min(1.0, max(0.0, x))
+
+
+def _confidence(
+    adx_1h: float,
+    adx_min: float,
+    vol_curr: float,
+    vol_ma: float,
+    vol_mult: float,
+    ema_mid: float,
+    ema_slow: float,
+    macd_hist: float,
+    atr: float,
+    close: float,
+    sl: float,
+) -> float:
+    """
+    Score a TF signal 0..1 (weighted sum of normalised components):
+
+      30%  1h trend strength   ADX from ADX_MIN (→0) to 50 (→1)
+      20%  1h trend separation |EMA50−EMA200|/EMA200 from 0 to 2%
+      20%  volume surge        vol/MA from the filter multiplier to 3×
+      10%  MACD momentum       |hist|/ATR from 0 to 0.2
+      20%  reward/risk         TP1 (2.5 ATR) / SL distance from 1.25 to 2.5
+    """
+    adx_s = _clamp01((adx_1h - adx_min) / max(50.0 - adx_min, 1e-9))
+    sep_s = _clamp01(abs(ema_mid - ema_slow) / ema_slow / 0.02)
+    vol_s = _clamp01((vol_curr / vol_ma - vol_mult) / max(3.0 - vol_mult, 1e-9))
+    macd_s = _clamp01(abs(macd_hist) / atr / 0.2) if atr > 0 else 0.0
+    sl_dist = abs(close - sl)
+    rr = (2.5 * atr / sl_dist) if sl_dist > 0 else 0.0
+    rr_s = _clamp01((rr - 1.25) / 1.25)
+    return 0.30 * adx_s + 0.20 * sep_s + 0.20 * vol_s + 0.10 * macd_s + 0.20 * rr_s
 
 
 def _swing_sl(

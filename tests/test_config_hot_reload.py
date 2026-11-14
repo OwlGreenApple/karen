@@ -69,11 +69,18 @@ def test_empty_symbols_raises(tmp_path: Path) -> None:
         Settings(_env_file=str(env))
 
 
-def test_leverage_bounds(tmp_path: Path) -> None:
+def test_position_size_bounds(tmp_path: Path) -> None:
     env = tmp_path / ".env"
-    write_env(env, "LEVERAGE=130\n")
+    write_env(env, "POSITION_SIZE_PCT=130\n")
     with pytest.raises(ValueError):
         Settings(_env_file=str(env))
+
+
+def test_leverage_env_is_ignored(tmp_path: Path) -> None:
+    env = tmp_path / ".env"
+    write_env(env, "LEVERAGE=50\n")
+    s = Settings(_env_file=str(env))
+    assert not hasattr(s, "leverage")
 
 
 def test_risk_per_trade_bounds(tmp_path: Path) -> None:
@@ -204,15 +211,15 @@ async def test_watcher_debounces_rapid_changes(tmp_path: Path, monkeypatch) -> N
 
 def test_load_fresh_settings_reads_disk(tmp_path: Path, monkeypatch) -> None:
     env_file = tmp_path / ".env"
-    write_env(env_file, "LEVERAGE=10\n")
+    write_env(env_file, "MAX_CONCURRENT_POSITIONS=2\n")
 
     import karen.config as cfg_mod
 
     monkeypatch.setattr(cfg_mod, "ENV_PATH", env_file)
 
     s = _load_fresh_settings()
-    assert s.leverage == 10
+    assert s.max_concurrent_positions == 2
 
-    write_env(env_file, "LEVERAGE=20\n")
+    write_env(env_file, "MAX_CONCURRENT_POSITIONS=4\n")
     s2 = _load_fresh_settings()
-    assert s2.leverage == 20
+    assert s2.max_concurrent_positions == 4

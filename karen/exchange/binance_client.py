@@ -18,6 +18,7 @@ from tenacity import (
 )
 
 from karen.config import Settings
+from karen.risk.position_sizing import MIN_LEVERAGE
 
 # ─── Domain types ─────────────────────────────────────────────────────────────
 
@@ -135,12 +136,17 @@ class BinanceClient:
             else:
                 raise
 
+        # Baseline leverage; the real per-trade leverage is set right before entry.
+        await self.set_leverage(symbol, MIN_LEVERAGE)
+
+    async def set_leverage(self, symbol: str, leverage: int) -> None:
+        """Set leverage for a symbol (no-op error if already at that value)."""
         try:
-            await _set_leverage(self.exchange, symbol, self._settings.leverage)
-            logger.info(f"{symbol}: leverage set to {self._settings.leverage}x isolated")
+            await _set_leverage(self.exchange, symbol, leverage)
+            logger.info(f"{symbol}: leverage set to {leverage}x isolated")
         except ccxt.ExchangeError as exc:
             if "leverage not changed" in str(exc).lower():
-                logger.debug(f"{symbol}: leverage already at {self._settings.leverage}x")
+                logger.debug(f"{symbol}: leverage already at {leverage}x")
             else:
                 raise
 
@@ -159,8 +165,16 @@ class BinanceClient:
         timeframe: str,
         limit: int = 250,
     ) -> pd.DataFrame:
-        """Return OHLCV DataFrame with UTC-aware timestamps."""
-        raw = await _fetch_ohlcv_with_retry(self.exchange, symbol, timeframe, limit)
+        """Return OHLCV DataFrame of CLOSED candles only, with UTC-aware timestamps.
+
+        Binance always includes the still-forming candle as the last row; when we
+        fetch right after a candle close it holds only a few seconds of data, which
+        corrupts volume/close-based indicators. Drop any candle not yet closed.
+        """
+        raw = await _fetch_ohlcv_with_retry(self.exchange, symbol, timeframe, limit + 1)
+        tf_ms = self.exchange.parse_timeframe(timeframe) * 1000
+        now_ms = self.exchange.milliseconds()
+        raw = [c for c in raw if c[0] + tf_ms <= now_ms][-limit:]
         df = pd.DataFrame(raw, columns=["timestamp", "open", "high", "low", "close", "volume"])
         df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True)
         df = df.set_index("timestamp").astype(float)
@@ -169,12 +183,19 @@ class BinanceClient:
     # ── Account ────────────────────────────────────────────────────────────
 
     async def fetch_equity(self) -> float:
-        """Return total wallet balance (equity) in USDT."""
+        """Return total wallet balance (equity) across stablecoin margin assets (USDT + USDC)."""
         balance = await _fetch_balance_with_retry(self.exchange)
-        # binanceusdm reports margin balance under 'USDT'
-        usdt = balance.get("USDT", {})
-        # 'total' = wallet balance + unrealized PnL
-        return float(usdt.get("total", 0.0))
+        # 'total' = wallet balance + unrealized PnL, per margin asset
+        return sum(
+            float((balance.get(asset) or {}).get("total") or 0.0) for asset in ("USDT", "USDC")
+        )
+
+    async def fetch_available_balance(self) -> float:
+        """Return free (unallocated) margin balance across USDT + USDC."""
+        balance = await _fetch_balance_with_retry(self.exchange)
+        return sum(
+            float((balance.get(asset) or {}).get("free") or 0.0) for asset in ("USDT", "USDC")
+        )
 
     # ── Positions ──────────────────────────────────────────────────────────
 
@@ -191,11 +212,13 @@ class BinanceClient:
                 continue
             result.append(
                 PositionInfo(
-                    symbol=str(p["symbol"]),
+                    # Exchange id ("BNBUSDC"), matching SYMBOLS and the DB — not the
+                    # ccxt unified symbol ("BNB/USDC:USDC")
+                    symbol=str((p.get("info") or {}).get("symbol") or p["symbol"]),
                     side=side_raw,
                     entry_price=float(p.get("entryPrice") or 0),
                     quantity=abs(contracts),
-                    leverage=int(float(p.get("leverage") or self._settings.leverage)),
+                    leverage=int(float(p.get("leverage") or MIN_LEVERAGE)),
                     unrealized_pnl=float(p.get("unrealizedPnl") or 0),
                     mark_price=float(p.get("markPrice") or 0),
                     notional=abs(float(p.get("notional") or 0)),

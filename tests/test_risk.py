@@ -224,3 +224,63 @@ class TestDailyGuardrails:
     def test_current_loss_pct_zero_before_new_day(self, default_settings):
         g = DailyGuardrails(default_settings)
         assert g.current_loss_pct(9_000) == pytest.approx(0.0)
+
+
+# ─── Dynamic leverage ────────────────────────────────────────────────────────
+
+from karen.risk.position_sizing import (  # noqa: E402
+    MAX_LEVERAGE,
+    MIN_LEVERAGE,
+    choose_leverage,
+    leverage_from_confidence,
+    max_safe_leverage,
+)
+
+
+class TestDynamicLeverage:
+    def test_confidence_maps_to_range(self):
+        assert leverage_from_confidence(0.0) == MIN_LEVERAGE == 5
+        assert leverage_from_confidence(1.0) == MAX_LEVERAGE == 20
+        assert leverage_from_confidence(0.5) == 12  # 5 + 7.5 → round
+        assert leverage_from_confidence(-1) == 5
+        assert leverage_from_confidence(3) == 20
+
+    def test_safe_leverage_keeps_sl_inside_liquidation(self):
+        # 1% SL → lev ≤ 1/(0.0125+0.005) = 57
+        assert max_safe_leverage(100.0, 99.0) == 57
+        # 4% SL → lev ≤ 1/(0.05+0.005) = 18
+        lev = max_safe_leverage(100.0, 104.0)
+        assert lev == 18
+        liq_dist = 1 / lev - 0.005
+        assert 0.8 * liq_dist >= 0.04
+
+    def test_choose_caps_high_confidence_with_wide_sl(self):
+        assert choose_leverage(1.0, 100.0, 99.0) == 20
+        assert choose_leverage(1.0, 100.0, 104.0) == 18
+
+    def test_choose_skips_when_even_min_leverage_unsafe(self):
+        # 20% SL → safe max 3x < 5x → skip
+        assert choose_leverage(0.0, 100.0, 120.0) is None
+
+
+from karen.risk.position_sizing import MAX_SL_LOSS_PCT, cap_sl_to_max_loss  # noqa: E402
+
+
+class TestMaxSlLoss:
+    def test_far_short_sl_is_pulled_in(self):
+        # 20x, SL 2% away → 40% loss → capped to 0.9% away (18%/20)
+        sl = cap_sl_to_max_loss("short", 100.0, 102.0, 20)
+        assert sl == pytest.approx(100.9)
+        assert 20 * (sl - 100) / 100 * 100 == pytest.approx(MAX_SL_LOSS_PCT)
+
+    def test_far_long_sl_is_pulled_in(self):
+        assert cap_sl_to_max_loss("long", 100.0, 95.0, 10) == pytest.approx(98.2)
+
+    def test_close_sl_untouched(self):
+        assert cap_sl_to_max_loss("short", 100.0, 100.5, 20) == 100.5
+        assert cap_sl_to_max_loss("long", 100.0, 99.5, 5) == 99.5
+
+    def test_capped_sl_always_safe_from_liquidation(self):
+        for lev in range(5, 21):
+            sl = cap_sl_to_max_loss("short", 100.0, 150.0, lev)
+            assert choose_leverage(1.0, 100.0, sl) is not None

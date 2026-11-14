@@ -48,8 +48,10 @@ class Settings(BaseSettings):
     )
 
     # Risk params
-    leverage: int = Field(default=20, ge=1, le=125)
-    position_size_pct: float = Field(default=10.0, gt=0, le=100)
+    # Leverage is NOT configurable: it is chosen per trade (MIN_LEVERAGE..MAX_LEVERAGE
+    # in karen/risk/position_sizing.py) from the signal's confidence score.
+    # Margin per entry = POSITION_SIZE_PCT of available balance (default: all of it).
+    position_size_pct: float = Field(default=100.0, gt=0, le=100)
     risk_per_trade_pct: float = Field(default=1.0, gt=0, le=10)
     max_concurrent_positions: int = Field(default=3, ge=1, le=20)
     max_daily_loss_pct: float = Field(default=5.0, gt=0, le=50)

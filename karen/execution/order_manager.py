@@ -15,7 +15,16 @@ from karen.exchange.binance_client import BinanceClient
 from karen.exchange.websocket import Kline
 from karen.persistence.db import AsyncSessionLocal
 from karen.persistence.models import CloseReason, Trade, TradeSide, TradeStatus
-from karen.risk.position_sizing import compute_dollar_risk, compute_quantity_by_margin_pct
+from karen.risk.position_sizing import (
+    MARGIN_FEE_BUFFER,
+    MAX_SL_LOSS_PCT,
+    cap_sl_to_max_loss,
+    choose_leverage,
+    compute_dollar_risk,
+    compute_quantity_by_margin_pct,
+    leverage_from_confidence,
+    max_safe_leverage,
+)
 from karen.strategies.base import Signal
 
 
@@ -69,16 +78,51 @@ class OrderManager:
         """
         s = self._settings
 
+        # Leverage 5x..20x from signal confidence; SL pulled in so a stop-out never
+        # loses more than MAX_SL_LOSS_PCT of margin; final guard: SL before liquidation
+        conf_lev = leverage_from_confidence(signal.confidence)
+        capped_sl = cap_sl_to_max_loss(
+            signal.side, signal.entry_price, signal.sl_price, conf_lev
+        )
+        if capped_sl != signal.sl_price:
+            logger.info(
+                f"{signal.symbol}: SL {signal.sl_price:.6g} → {capped_sl:.6g} "
+                f"(max loss {MAX_SL_LOSS_PCT:.0f}% of margin at {conf_lev}x)"
+            )
+            signal.sl_price = capped_sl
+        leverage = choose_leverage(signal.confidence, signal.entry_price, signal.sl_price)
+        if leverage is None:
+            logger.warning(
+                f"{signal.symbol}: SL too far for safe leverage "
+                f"(entry={signal.entry_price}, SL={signal.sl_price}) — skipping"
+            )
+            return None
+
+        # Margin = POSITION_SIZE_PCT of free balance (never more than what's available)
+        try:
+            available = await self._client.fetch_available_balance()
+        except Exception as exc:
+            logger.error(f"{signal.symbol}: fetch available balance failed — {exc}")
+            return None
+        margin_base = min(equity, available) * MARGIN_FEE_BUFFER
+
         try:
             qty = compute_quantity_by_margin_pct(
-                equity_usdt=equity,
+                equity_usdt=margin_base,
                 margin_pct=s.position_size_pct,
                 entry_price=signal.entry_price,
-                leverage=s.leverage,
+                leverage=leverage,
             )
         except ValueError as exc:
             logger.error(f"{signal.symbol}: position sizing failed — {exc}")
             return None
+
+        logger.info(
+            f"{signal.symbol}: confidence={signal.confidence:.2f} → leverage {leverage}x "
+            f"(safe max {max_safe_leverage(signal.entry_price, signal.sl_price)}x) | "
+            f"margin=${margin_base * s.position_size_pct / 100:.2f} "
+            f"notional=${qty * signal.entry_price:.2f}"
+        )
 
         # Ensure minimum sensible quantity (Binance min notional ~$5)
         min_notional = 5.0
@@ -100,6 +144,12 @@ class OrderManager:
 
         entry_side = "buy" if signal.side == "long" else "sell"
         exit_side = "sell" if signal.side == "long" else "buy"
+
+        try:
+            await self._client.set_leverage(signal.symbol, leverage)
+        except Exception as exc:
+            logger.error(f"{signal.symbol}: set leverage {leverage}x failed — {exc}")
+            return None
 
         # 1. Entry order (market)
         entry_coid = _coid("e", signal.symbol)
@@ -123,7 +173,7 @@ class OrderManager:
             status=TradeStatus.OPEN,
             entry_price=signal.entry_price,
             quantity=qty,
-            leverage=s.leverage,
+            leverage=leverage,
             sl_price=signal.sl_price,
             tp1_price=signal.tp1_price,
             tp2_price=signal.tp2_price,
@@ -210,7 +260,7 @@ class OrderManager:
                 quantity=qty,
                 sl_price=signal.sl_price,
                 tp1_price=signal.tp1_price,
-                leverage=s.leverage,
+                leverage=leverage,
                 dollar_risk=dollar_risk,
             )
 

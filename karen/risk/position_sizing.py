@@ -78,3 +78,66 @@ def compute_dollar_risk(
 ) -> float:
     """Return the dollar loss if SL is hit exactly."""
     return quantity * abs(entry_price - sl_price)
+
+
+# ─── Dynamic leverage ─────────────────────────────────────────────────────────
+
+MIN_LEVERAGE = 5
+MAX_LEVERAGE = 20
+# Binance maintenance margin rate for the lowest notional tier (~0.4–0.5% on majors)
+MAINTENANCE_MARGIN_RATE = 0.005
+# SL must sit inside this fraction of the liquidation distance (20% safety buffer)
+LIQ_SAFETY = 0.8
+# Keep a little balance free so Binance accepts the order (entry fee is charged on top)
+MARGIN_FEE_BUFFER = 0.97
+
+
+def leverage_from_confidence(confidence: float) -> int:
+    """Map a 0..1 confidence score linearly onto MIN_LEVERAGE..MAX_LEVERAGE."""
+    c = min(1.0, max(0.0, confidence))
+    return int(round(MIN_LEVERAGE + c * (MAX_LEVERAGE - MIN_LEVERAGE)))
+
+
+def max_safe_leverage(entry_price: float, sl_price: float) -> int:
+    """
+    Highest leverage at which the isolated-margin liquidation price is still
+    comfortably beyond the stop loss.
+
+    Isolated liquidation distance ≈ 1/leverage − maintenance_margin_rate.
+    We require:  sl_distance_pct ≤ LIQ_SAFETY × (1/lev − mmr)
+              →  lev ≤ 1 / (sl_distance_pct / LIQ_SAFETY + mmr)
+    """
+    if entry_price <= 0:
+        raise ValueError(f"entry_price must be positive, got {entry_price}")
+    sl_pct = abs(entry_price - sl_price) / entry_price
+    return int(1.0 / (sl_pct / LIQ_SAFETY + MAINTENANCE_MARGIN_RATE))
+
+
+def choose_leverage(confidence: float, entry_price: float, sl_price: float) -> int | None:
+    """
+    Leverage for a trade: confidence-based, capped so the SL triggers before
+    liquidation. Returns None if even MIN_LEVERAGE would liquidate before the SL.
+    """
+    lev = min(leverage_from_confidence(confidence), max_safe_leverage(entry_price, sl_price))
+    lev = min(lev, MAX_LEVERAGE)
+    return lev if lev >= MIN_LEVERAGE else None
+
+
+# ─── Max loss per position ────────────────────────────────────────────────────
+
+# A stop-loss hit may lose at most this fraction of the position's margin
+# (Binance ROE −18%). With 100% margin per entry that is ~18% of the balance.
+MAX_SL_LOSS_PCT = 18.0
+
+
+def cap_sl_to_max_loss(side: str, entry_price: float, sl_price: float, leverage: int) -> float:
+    """
+    Pull the SL closer to entry if hitting it would lose more than MAX_SL_LOSS_PCT
+    of margin.  Loss on margin = leverage × |entry − sl| / entry.
+    """
+    if entry_price <= 0 or leverage <= 0:
+        raise ValueError("entry_price and leverage must be positive")
+    max_dist = entry_price * (MAX_SL_LOSS_PCT / 100.0) / leverage
+    if side == "long":
+        return max(sl_price, entry_price - max_dist)
+    return min(sl_price, entry_price + max_dist)

@@ -6,7 +6,7 @@ and validates the full startup/trading/shutdown flow.
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import patch, AsyncMock, MagicMock
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -67,6 +67,8 @@ def _make_client(
     c.fetch_open_orders = AsyncMock(return_value=[])
     c.fetch_ohlcv = AsyncMock(return_value=make_ohlcv())
     c.get_min_qty = MagicMock(return_value=0.0)
+    c.fetch_available_balance = AsyncMock(return_value=equity)
+    c.set_leverage = AsyncMock()
     return c
 
 
@@ -364,7 +366,9 @@ async def test_tf_signal_leads_to_open_position(default_settings, db):
 
     client = _make_client()
     order_mgr = OrderManager(client, default_settings, session_factory=db)
-    trade = await order_mgr.open_position(signal, equity=10_000.0)
+    # synthetic candles give a nonsensical swing SL; bypass the liquidation guard here
+    with patch("karen.execution.order_manager.choose_leverage", return_value=5):
+        trade = await order_mgr.open_position(signal, equity=10_000.0)
     assert trade is not None
     assert trade.status == TradeStatus.OPEN
 

@@ -64,6 +64,8 @@ def mock_client() -> MagicMock:
     c.fetch_order = AsyncMock(return_value=_order(status="open"))
     c.fetch_open_orders = AsyncMock(return_value=[])
     c.get_min_qty = MagicMock(return_value=0.0)
+    c.fetch_available_balance = AsyncMock(return_value=10_000.0)
+    c.set_leverage = AsyncMock()
     return c
 
 

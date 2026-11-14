@@ -19,7 +19,7 @@ python-dotenv>=1.0.1
 watchdog>=4.0.0
 
 # === Database ===
-sqlalchemy>=2.0.30
+sqlalchemy[asyncio]>=2.0.30
 aiosqlite>=0.20.0
 
 # === Telegram ===

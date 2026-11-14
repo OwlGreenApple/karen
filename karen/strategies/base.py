@@ -25,6 +25,9 @@ class Signal:
     atr: float            # ATR at signal time (used for trailing stop sizing)
     trail_atr_mult: float = 3.0  # chandelier exit multiplier
     reason: str = ""
+    # 0..1 — how strong the setup looks; drives per-trade leverage (5x..20x).
+    # Strategies that don't score their signals get 0.0 → minimum leverage.
+    confidence: float = 0.0
 
 
 class AbstractStrategy(ABC):
