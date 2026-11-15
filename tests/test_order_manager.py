@@ -64,6 +64,8 @@ def mock_client() -> MagicMock:
     c.fetch_order = AsyncMock(return_value=_order(status="open"))
     c.fetch_open_orders = AsyncMock(return_value=[])
     c.get_min_qty = MagicMock(return_value=0.0)
+    c.get_qty_step = MagicMock(return_value=0.0)
+    c.floor_qty = MagicMock(side_effect=lambda s, q: q)
     c.fetch_available_balance = AsyncMock(return_value=10_000.0)
     c.set_leverage = AsyncMock()
     return c
@@ -561,3 +563,31 @@ async def test_trailing_stop_no_update_when_further_for_long(
 
     mock_client.cancel_order.assert_not_called()
     mock_client.place_order.assert_not_called()
+
+
+# ─── TP quantity split (lot-step aware) ──────────────────────────────────────
+
+from karen.execution.order_manager import _split_tp_qty  # noqa: E402
+
+
+@pytest.mark.parametrize(
+    ("qty", "pct", "has_tp2", "step", "min_qty", "expected"),
+    [
+        # the live BTC case: 0.002 BTC, MR 70/30 → 0.001 / 0.001 (TP2 no longer rejected)
+        (0.002, 0.70, True, 0.001, 0.001, (0.001, 0.001)),
+        # too small to split → TP1 takes everything, nothing left unprotected
+        (0.001, 0.70, True, 0.001, 0.001, (0.001, 0.0)),
+        # plenty of lots → 70/30 exactly, remainder to TP2
+        (1.0, 0.70, True, 0.01, 0.01, (0.7, 0.3)),
+        # TF (no TP2): 50% TP1, rest is the trailing runner
+        (0.010, 0.50, False, 0.001, 0.001, (0.005, 0.0)),
+        # AAVE-like min qty 0.1: 0.3 * 0.7 = 0.21 → 0.2 / 0.1
+        (0.3, 0.70, True, 0.1, 0.1, (0.2, 0.1)),
+    ],
+)
+def test_split_tp_qty(qty, pct, has_tp2, step, min_qty, expected):
+    tp1, tp2 = _split_tp_qty(qty, pct, has_tp2=has_tp2, step=step, min_qty=min_qty)
+    assert tp1 == pytest.approx(expected[0])
+    assert tp2 == pytest.approx(expected[1])
+    if has_tp2:
+        assert tp1 + tp2 == pytest.approx(qty)  # every lot has a take-profit

@@ -124,6 +124,9 @@ class OrderManager:
             f"notional=${qty * signal.entry_price:.2f}"
         )
 
+        # What Binance will actually fill — keeps DB, SL and TP sizes consistent
+        qty = self._client.floor_qty(signal.symbol, qty)
+
         # Ensure minimum sensible quantity (Binance min notional ~$5)
         min_notional = 5.0
         if qty * signal.entry_price < min_notional:
@@ -209,7 +212,18 @@ class OrderManager:
                 await self._notifier.error("sl_order_failed", f"SL failed {signal.symbol}: {exc}")
 
         # 4. TP1 (take-profit-market, reduce_only, partial quantity)
-        tp1_qty = qty * signal.tp1_qty_pct
+        tp1_qty, tp2_qty = _split_tp_qty(
+            qty,
+            signal.tp1_qty_pct,
+            has_tp2=signal.tp2_price is not None,
+            step=self._client.get_qty_step(signal.symbol),
+            min_qty=min_qty,
+        )
+        if tp1_qty == qty and signal.tp1_qty_pct < 1.0:
+            logger.info(
+                f"{signal.symbol}: qty {qty} too small to split "
+                f"{signal.tp1_qty_pct:.0%}/{1 - signal.tp1_qty_pct:.0%} — TP1 covers full position"
+            )
         tp1_coid = _coid("tp1", signal.symbol)
         try:
             tp1_order = await self._client.place_order(
@@ -226,8 +240,7 @@ class OrderManager:
             logger.error(f"Trade #{trade.id}: TP1 order failed — {exc}")
 
         # 5. TP2 (only for MR runner with fixed price)
-        if signal.tp2_price is not None:
-            tp2_qty = qty * (1.0 - signal.tp1_qty_pct)
+        if signal.tp2_price is not None and tp2_qty > 0:
             tp2_coid = _coid("tp2", signal.symbol)
             try:
                 tp2_order = await self._client.place_order(
@@ -531,3 +544,24 @@ def _approx_atr(klines: list[Kline], period: int = 14) -> float:
     """Approximate ATR using recent candle ranges (no smoothing for simplicity)."""
     ranges = [k.high - k.low for k in klines[-period:]]
     return sum(ranges) / len(ranges) if ranges else 1.0
+
+
+def _split_tp_qty(
+    qty: float, tp1_pct: float, *, has_tp2: bool, step: float, min_qty: float
+) -> tuple[float, float]:
+    """
+    Split an already lot-rounded qty into (tp1_qty, tp2_qty) that Binance accepts.
+
+    - TP1 gets tp1_pct of qty, rounded to the nearest lot step.
+    - TP2 (if any) gets exactly the remainder, so nothing is left without a TP.
+    - With no TP2 (TF runner), the remainder is the trailing-stop runner.
+    - If either part would fall below the exchange minimum, TP1 takes the whole qty
+      (better a full take-profit than an unprotected remainder).
+    """
+    raw = qty * tp1_pct
+    tp1 = min(round(round(raw / step) * step, 12) if step > 0 else raw, qty)
+    rest = round(qty - tp1, 12)
+    floor = max(min_qty, step)
+    if tp1 < floor or (rest > 0 and rest < floor):
+        return qty, 0.0
+    return tp1, (rest if has_tp2 else 0.0)

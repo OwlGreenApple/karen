@@ -159,6 +159,20 @@ class BinanceClient:
                 return market.get("limits", {}).get("amount", {}).get("min") or 0.0
         return 0.0
 
+    def get_qty_step(self, symbol: str) -> float:
+        """Return the order quantity step (lot size) for a symbol (0 if unknown)."""
+        for market in self.exchange.markets.values():
+            if market.get("id") == symbol:
+                return float((market.get("precision") or {}).get("amount") or 0.0)
+        return 0.0
+
+    def floor_qty(self, symbol: str, qty: float) -> float:
+        """Round a quantity DOWN to the symbol's lot step (what Binance will accept)."""
+        step = self.get_qty_step(symbol)
+        if step <= 0:
+            return qty
+        return round(int(qty / step + 1e-9) * step, 12)
+
     async def fetch_ohlcv(
         self,
         symbol: str,

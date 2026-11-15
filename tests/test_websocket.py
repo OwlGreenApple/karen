@@ -32,14 +32,14 @@ def test_mark_price_stream_name() -> None:
 
 def test_stream_url_testnet() -> None:
     url = _stream_url(testnet=True, streams=["btcusdt@kline_15m", "ethusdt@markPrice@1s"])
-    assert "fstream.binancefuture.com" in url
+    assert "fstream.binancefuture.com/market/stream" in url
     assert "btcusdt@kline_15m" in url
     assert "ethusdt@markPrice@1s" in url
 
 
 def test_stream_url_live() -> None:
     url = _stream_url(testnet=False, streams=["btcusdt@kline_15m"])
-    assert "fstream.binance.com" in url
+    assert "fstream.binance.com/market/stream" in url
 
 
 # ─── Message parsers ──────────────────────────────────────────────────────────
@@ -272,3 +272,27 @@ async def test_feed_start_idempotent() -> None:
         feed.start()  # second call should be no-op
         assert feed._task is first_task
         await feed.stop()
+
+
+@pytest.mark.asyncio
+async def test_listen_reconnects_when_stream_goes_silent(monkeypatch) -> None:
+    """A connected-but-silent socket (legacy /stream path) must trigger a reconnect."""
+    import asyncio as _asyncio
+
+    from karen.exchange import websocket as wsmod
+
+    class SilentWS:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *a):
+            return False
+
+        async def recv(self):
+            await _asyncio.sleep(3600)
+
+    monkeypatch.setattr(wsmod.websockets, "connect", lambda *a, **k: SilentWS())
+    feed = wsmod.PriceFeed(["BTCUSDC"], testnet=False)
+    feed._running = True
+    feed._SILENCE_TIMEOUT = 0.05
+    await _asyncio.wait_for(feed._listen("wss://x"), timeout=2)  # returns, no hang

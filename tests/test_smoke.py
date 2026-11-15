@@ -67,6 +67,8 @@ def _make_client(
     c.fetch_open_orders = AsyncMock(return_value=[])
     c.fetch_ohlcv = AsyncMock(return_value=make_ohlcv())
     c.get_min_qty = MagicMock(return_value=0.0)
+    c.get_qty_step = MagicMock(return_value=0.0)
+    c.floor_qty = MagicMock(side_effect=lambda s, q: q)
     c.fetch_available_balance = AsyncMock(return_value=equity)
     c.set_leverage = AsyncMock()
     return c

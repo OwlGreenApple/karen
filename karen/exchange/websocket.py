@@ -46,8 +46,10 @@ MarkPriceCallback = Callable[[MarkPrice], Coroutine[Any, Any, None]]
 
 # ─── Stream URL helpers ────────────────────────────────────────────────────────
 
-_LIVE_BASE = "wss://fstream.binance.com/stream"
-_TEST_BASE = "wss://fstream.binancefuture.com/stream"
+# Binance split USDⓈ-M futures WS by traffic type: kline/markPrice live under
+# /market. The legacy /stream path still accepts connections but sends NOTHING.
+_LIVE_BASE = "wss://fstream.binance.com/market/stream"
+_TEST_BASE = "wss://fstream.binancefuture.com/market/stream"
 
 
 def _stream_url(testnet: bool, streams: list[str]) -> str:
@@ -81,6 +83,8 @@ class PriceFeed:
 
     _TIMEFRAMES = ("1m", "15m", "1h")
     _MAX_RECONNECT_DELAY = 60.0
+    # markPrice@1s arrives every second; this much silence means a dead stream
+    _SILENCE_TIMEOUT = 60.0
 
     def __init__(self, symbols: list[str], testnet: bool = True) -> None:
         self._symbols = symbols
@@ -147,9 +151,14 @@ class PriceFeed:
     async def _listen(self, url: str) -> None:
         async with websockets.connect(url, ping_interval=20, ping_timeout=10) as ws:  # type: ignore[attr-defined]
             logger.info("WS connection established")
-            async for raw in ws:
-                if not self._running:
-                    break
+            while self._running:
+                try:
+                    raw = await asyncio.wait_for(ws.recv(), timeout=self._SILENCE_TIMEOUT)
+                except TimeoutError:
+                    logger.warning(
+                        f"WS silent for {self._SILENCE_TIMEOUT:.0f}s — reconnecting"
+                    )
+                    return
                 try:
                     msg = json.loads(raw)
                     await self._dispatch(msg)
