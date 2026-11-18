@@ -97,6 +97,16 @@ class Indicators1h:
 # ─── Public compute functions ─────────────────────────────────────────────────
 
 
+def _bbands(close: pd.Series, length: int, std: float) -> pd.DataFrame:
+    """Bollinger Bands that honour `std` on every pandas-ta version.
+
+    pandas-ta >= 0.4 renamed `std` to `lower_std`/`upper_std` and silently ignores
+    `std` (bands stayed at the 2.0 default, so MR_BB_STD had no effect). Older
+    versions ignore the new names, so pass both.
+    """
+    return ta.bbands(close, length=length, std=std, lower_std=std, upper_std=std)
+
+
 def compute_15m(df: pd.DataFrame, settings: Settings) -> Indicators15m:
     """Compute all 15m indicators needed by both strategies."""
     _validate(df, min_rows=30)
@@ -108,7 +118,7 @@ def compute_15m(df: pd.DataFrame, settings: Settings) -> Indicators15m:
 
     # Bollinger Bands — use prefix search because pandas-ta encodes std twice
     # e.g., BBL_20_2.0_2.0 in some versions
-    bb_df = ta.bbands(close, length=settings.mr_bb_period, std=settings.mr_bb_std)
+    bb_df = _bbands(close, settings.mr_bb_period, settings.mr_bb_std)
     bb_upper = _pick(bb_df, "BBU_")
     bb_middle = _pick(bb_df, "BBM_")
     bb_lower = _pick(bb_df, "BBL_")
@@ -190,7 +200,7 @@ def compute_5m_mr(df: pd.DataFrame, settings: Settings) -> Indicators5m_MR:
     high = df["high"]
     low = df["low"]
 
-    bb_df = ta.bbands(close, length=settings.mr_bb_period, std=settings.mr_bb_std)
+    bb_df = _bbands(close, settings.mr_bb_period, settings.mr_bb_std)
     bb_upper = _pick(bb_df, "BBU_")
     bb_middle = _pick(bb_df, "BBM_")
     bb_lower = _pick(bb_df, "BBL_")

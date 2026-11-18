@@ -40,7 +40,6 @@ class OrderManager:
     - Mode switch: cancel all pending entry orders
     """
 
-    _TIME_STOP_CANDLES = 8   # MR: 8 × 15m = 2 hours
     _SCALP_TIME_STOP = 10    # Scalp: 10 × 1m = 10 minutes
 
     def __init__(
@@ -349,7 +348,8 @@ class OrderManager:
         Called by the WebSocket feed on each finalized kline.
 
         Handles:
-        - MR time stop: close if 8 × 15m candles passed without profit
+        - MR time stop: close if MR_TIME_STOP_CANDLES × 15m passed without profit
+        - MR breakeven: SL → entry once TP1 fills (MR_BREAKEVEN_AFTER_TP1)
         - Scalp time stop: close if 10 × 1m candles passed without profit
         - TF trailing stop: update chandelier SL on each 15m candle
         """
@@ -360,6 +360,11 @@ class OrderManager:
         open_trades = await self._get_open_trades_for_symbol(symbol)
 
         for trade in open_trades:
+            # MR breakeven: react on every closed kline (1m included) so the SL
+            # moves to entry within ~1 minute of TP1 filling
+            if trade.strategy_mode == "mean_reversion":
+                await self._check_breakeven(trade, kline)
+
             expected_tf = "1m" if trade.strategy_mode == "scalp_1m" else "15m"
             if kline.timeframe != expected_tf:
                 continue
@@ -369,11 +374,52 @@ class OrderManager:
             await self._persist_candles_open(trade)
 
             if trade.strategy_mode == "mean_reversion":
-                await self._check_time_stop(trade, kline, self._TIME_STOP_CANDLES)
+                if self._settings.mr_time_stop_candles > 0:
+                    await self._check_time_stop(
+                        trade, kline, self._settings.mr_time_stop_candles
+                    )
             elif trade.strategy_mode == "scalp_1m":
                 await self._check_time_stop(trade, kline, self._SCALP_TIME_STOP)
             else:
                 await self._check_trailing_stop(trade, kline)
+
+    async def _check_breakeven(self, trade: Trade, kline: Kline) -> None:
+        """
+        MR_BREAKEVEN_AFTER_TP1: once TP1 has filled, move the SL to the entry price
+        so the remaining position can no longer turn into a loss.
+
+        Cheap pre-check on the kline range (TP1 price touched) before asking the
+        exchange whether the TP1 order actually filled.
+        """
+        if not self._settings.mr_breakeven_after_tp1 or not trade.tp1_order_id:
+            return
+        if trade.tp1_price is None or trade.sl_price == trade.entry_price:
+            return
+        touched = (
+            kline.low <= trade.tp1_price
+            if trade.side == TradeSide.SHORT
+            else kline.high >= trade.tp1_price
+        )
+        if not touched:
+            return
+        try:
+            tp1 = await self._client.fetch_order(trade.symbol, trade.tp1_order_id)
+        except Exception as exc:
+            logger.warning(f"Trade #{trade.id}: TP1 status check failed — {exc}")
+            return
+        if tp1.status != "closed":
+            return
+        # a stop at entry is only valid while price is still on the profitable side
+        in_profit = (
+            kline.close < trade.entry_price
+            if trade.side == TradeSide.SHORT
+            else kline.close > trade.entry_price
+        )
+        if not in_profit:
+            logger.info(f"Trade #{trade.id}: TP1 filled but price back at entry — SL kept")
+            return
+        logger.info(f"Trade #{trade.id}: TP1 filled — moving SL to entry {trade.entry_price}")
+        await self._update_sl(trade, trade.entry_price, kline.close)
 
     async def _check_time_stop(self, trade: Trade, kline: Kline, max_candles: int) -> None:
         """Close trade if max_candles passed and not in profit."""
@@ -412,14 +458,13 @@ class OrderManager:
                 await self._update_sl(trade, new_sl, kline.close)
 
     async def _update_sl(self, trade: Trade, new_sl: float, current_price: float) -> None:
-        """Cancel existing SL order and place a new one."""
+        """
+        Replace the SL order: place the NEW stop first, cancel the old one only after
+        it succeeded — so a rejected new stop never leaves the position unprotected.
+        (Two reduce-only stops overlapping for a moment is harmless.)
+        """
         exit_side = "sell" if trade.side == TradeSide.LONG else "buy"
-
-        if trade.sl_order_id:
-            try:
-                await self._client.cancel_order(trade.symbol, trade.sl_order_id)
-            except Exception as exc:
-                logger.warning(f"Trade #{trade.id}: cancel old SL failed — {exc}")
+        old_sl, old_id = trade.sl_price, trade.sl_order_id
 
         # Remaining quantity (Binance reduce_only handles partial)
         coid = _coid("sl", trade.symbol)
@@ -433,18 +478,27 @@ class OrderManager:
                 reduce_only=True,
                 client_order_id=coid,
             )
-            old_sl = trade.sl_price
-            trade.sl_price = new_sl
-            trade.sl_order_id = new_order.id
-            async with self._session_factory() as session:
-                await session.merge(trade)
-                await session.commit()
-            logger.info(
-                f"Trade #{trade.id} trailing SL updated: {old_sl:.2f} → {new_sl:.2f} "
-                f"(price={current_price:.2f})"
-            )
         except Exception as exc:
-            logger.error(f"Trade #{trade.id}: update trailing SL failed — {exc}")
+            logger.error(
+                f"Trade #{trade.id}: new SL {new_sl:.6g} rejected — keeping old SL "
+                f"{old_sl} — {exc}"
+            )
+            return
+
+        if old_id:
+            try:
+                await self._client.cancel_order(trade.symbol, old_id)
+            except Exception as exc:
+                logger.warning(f"Trade #{trade.id}: cancel old SL failed — {exc}")
+
+        trade.sl_price = new_sl
+        trade.sl_order_id = new_order.id
+        async with self._session_factory() as session:
+            await session.merge(trade)
+            await session.commit()
+        logger.info(
+            f"Trade #{trade.id} SL updated: {old_sl} → {new_sl:.6g} (price={current_price:.6g})"
+        )
 
     # ── Cancel pending entries (mode switch) ───────────────────────────────
 

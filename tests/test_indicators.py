@@ -269,3 +269,18 @@ def test_pick_returns_first_match():
     df = pd.DataFrame({"BBL_20_2.0_2.0": [1.0], "BBL_30_2.0_2.0": [2.0]})
     result = _pick(df, "BBL_")
     assert result.iloc[0] == pytest.approx(1.0)
+
+
+def test_bbands_honours_std():
+    """pandas-ta >= 0.4 ignores `std=`; MR_BB_STD must still widen the bands."""
+    import numpy as np
+    import pandas as pd
+
+    from karen.indicators.ta import _bbands
+
+    s = pd.Series(np.random.default_rng(0).normal(0, 1, 200).cumsum() + 100)
+    w2 = _bbands(s, 20, 2.0)
+    w3 = _bbands(s, 20, 3.0)
+    width2 = (w2.filter(like="BBU_").iloc[-1, 0] - w2.filter(like="BBL_").iloc[-1, 0])
+    width3 = (w3.filter(like="BBU_").iloc[-1, 0] - w3.filter(like="BBL_").iloc[-1, 0])
+    assert width3 / width2 == pytest.approx(1.5, rel=1e-6)

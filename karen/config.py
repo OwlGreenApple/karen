@@ -72,6 +72,9 @@ class Settings(BaseSettings):
     mr_rsi_oversold: float = Field(default=35.0, gt=0, lt=50)
     mr_rsi_overbought: float = Field(default=65.0, gt=50, lt=100)
     mr_adx_max: float = Field(default=25.0, gt=0)
+    mr_sl_atr: float = Field(default=1.5, gt=0)            # SL distance in 5m ATRs
+    mr_time_stop_candles: int = Field(default=8, ge=0)     # 15m candles; 0 = disabled
+    mr_breakeven_after_tp1: bool = Field(default=False)    # move SL to entry once TP1 fills
 
     # Trend Following params
     tf_ema_fast: int = Field(default=21, ge=5)

@@ -32,8 +32,9 @@ class MeanReversionStrategy(AbstractStrategy):
     Exit:
       - TP1 (70%): middle BB (SMA20)
       - TP2 (30%): opposite band
-      - SL:        1.5 × ATR(14) beyond entry
-      - Time stop: 8 candles — enforced by order_manager, not here
+      - SL:        MR_SL_ATR × ATR(14) beyond entry (capped by the 18% max-loss rule)
+      - Time stop: MR_TIME_STOP_CANDLES × 15m — enforced by order_manager
+      - Optional:  SL → entry after TP1 (MR_BREAKEVEN_AFTER_TP1) — order_manager
     """
 
     def __init__(
@@ -108,7 +109,7 @@ class MeanReversionStrategy(AbstractStrategy):
             and curr_close > lower  # type: ignore[operator]
             and rsi < s.mr_rsi_oversold  # type: ignore[operator]
         ):
-            sl = curr_close - 1.5 * atr  # type: ignore[operator]
+            sl = curr_close - s.mr_sl_atr * atr  # type: ignore[operator]
             tp1 = middle
             tp2 = upper
             conf = _mr_confidence(
@@ -139,7 +140,7 @@ class MeanReversionStrategy(AbstractStrategy):
             and curr_close < upper  # type: ignore[operator]
             and rsi > s.mr_rsi_overbought  # type: ignore[operator]
         ):
-            sl = curr_close + 1.5 * atr  # type: ignore[operator]
+            sl = curr_close + s.mr_sl_atr * atr  # type: ignore[operator]
             tp1 = middle
             tp2 = lower
             conf = _mr_confidence(

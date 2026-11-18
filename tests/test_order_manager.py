@@ -591,3 +591,97 @@ def test_split_tp_qty(qty, pct, has_tp2, step, min_qty, expected):
     assert tp2 == pytest.approx(expected[1])
     if has_tp2:
         assert tp1 + tp2 == pytest.approx(qty)  # every lot has a take-profit
+
+
+# ─── MR breakeven after TP1 / safe SL replacement ────────────────────────────
+
+
+def _kl(low: float, high: float, close: float, tf: str = "1m") -> Kline:
+    return Kline("BTCUSDT", tf, 0, close, high, low, close, 10.0, True)
+
+
+async def _load(db_factory, trade_id):
+    async with db_factory() as session:
+        return await session.get(Trade, trade_id)
+
+
+@pytest.fixture
+def be_mgr(default_settings, mock_client, db_factory):
+    s = default_settings.model_copy(update={"mr_breakeven_after_tp1": True})
+    return OrderManager(mock_client, s, session_factory=db_factory)
+
+
+@pytest.mark.asyncio
+async def test_breakeven_moves_sl_to_entry_after_tp1_fill(
+    be_mgr, mock_client, open_trade, db_factory
+):
+    mock_client.fetch_order.return_value = _order(oid="tp1-1", status="closed")
+    mock_client.place_order.return_value = _order(oid="sl-be", status="open")
+    trade = await _load(db_factory, open_trade.id)
+
+    await be_mgr._check_breakeven(trade, _kl(low=40_300, high=40_600, close=40_450))
+
+    kw = mock_client.place_order.call_args[1]
+    assert kw["order_type"] == "stop_market" and kw["stop_price"] == 40_000.0
+    assert kw["reduce_only"] is True
+    mock_client.cancel_order.assert_called_once_with("BTCUSDT", "sl-1")
+    assert (await _load(db_factory, open_trade.id)).sl_price == 40_000.0
+
+
+@pytest.mark.asyncio
+async def test_breakeven_skipped_when_tp1_not_touched(be_mgr, mock_client, open_trade, db_factory):
+    trade = await _load(db_factory, open_trade.id)
+    await be_mgr._check_breakeven(trade, _kl(low=40_100, high=40_400, close=40_300))
+    mock_client.fetch_order.assert_not_called()
+    mock_client.place_order.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_breakeven_skipped_when_tp1_order_not_filled(
+    be_mgr, mock_client, open_trade, db_factory
+):
+    mock_client.fetch_order.return_value = _order(oid="tp1-1", status="open")
+    trade = await _load(db_factory, open_trade.id)
+    await be_mgr._check_breakeven(trade, _kl(low=40_300, high=40_600, close=40_450))
+    mock_client.place_order.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_breakeven_disabled_by_default(order_mgr, mock_client, open_trade, db_factory):
+    trade = await _load(db_factory, open_trade.id)
+    await order_mgr._check_breakeven(trade, _kl(low=40_300, high=40_600, close=40_450))
+    mock_client.fetch_order.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_breakeven_keeps_sl_if_price_back_at_entry(
+    be_mgr, mock_client, open_trade, db_factory
+):
+    mock_client.fetch_order.return_value = _order(oid="tp1-1", status="closed")
+    trade = await _load(db_factory, open_trade.id)
+    # wick hit TP1 but candle closed below entry (long) → stop at entry would trigger
+    await be_mgr._check_breakeven(trade, _kl(low=39_900, high=40_600, close=39_950))
+    mock_client.place_order.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_update_sl_keeps_old_stop_when_new_rejected(
+    order_mgr, mock_client, open_trade, db_factory
+):
+    mock_client.place_order.side_effect = Exception("Order would immediately trigger")
+    trade = await _load(db_factory, open_trade.id)
+    await order_mgr._update_sl(trade, 40_000.0, 39_900.0)
+    mock_client.cancel_order.assert_not_called()          # old SL untouched
+    assert (await _load(db_factory, open_trade.id)).sl_price == 39_500.0
+
+
+@pytest.mark.asyncio
+async def test_mr_time_stop_uses_setting(default_settings, mock_client, open_trade, db_factory):
+    s = default_settings.model_copy(update={"mr_time_stop_candles": 16})
+    mgr = OrderManager(mock_client, s, session_factory=db_factory)
+    async with db_factory() as session:
+        t = await session.get(Trade, open_trade.id)
+        t.candles_open = 8  # would have fired with the old hard-coded 8
+        await session.commit()
+    await mgr.on_closed_kline(_kl(low=39_700, high=39_900, close=39_800, tf="15m"))
+    mock_client.place_order.assert_not_called()
