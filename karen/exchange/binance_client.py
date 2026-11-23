@@ -61,6 +61,9 @@ _RETRYABLE = (
 )
 
 
+_ALGO: dict[str, Any] = {"stop": True}  # ccxt flag for Binance algo (conditional) orders
+
+
 def _make_retry(label: str) -> Any:
     return retry(
         retry=retry_if_exception_type(_RETRYABLE),
@@ -278,24 +281,44 @@ class BinanceClient:
         )
         return _parse_order(raw)
 
+    # SL/TP (stop_market / take_profit_market) are Binance *algo* orders: they live
+    # on separate endpoints, so plain fetch/cancel calls answer "Order does not exist".
+    # Each call below tries the regular endpoint first, then the algo one.
+
     async def cancel_order(self, symbol: str, order_id: str) -> None:
-        """Cancel a single order by exchange ID."""
-        await _cancel_order_with_retry(self.exchange, order_id, symbol)
+        """Cancel a single order (regular or algo) by exchange ID."""
+        try:
+            await _cancel_order_with_retry(self.exchange, order_id, symbol)
+        except ccxt.OrderNotFound:
+            await _cancel_order_with_retry(self.exchange, order_id, symbol, _ALGO)
         logger.info(f"Order cancelled: {symbol} id={order_id}")
 
     async def cancel_all_orders(self, symbol: str) -> None:
-        """Cancel all open orders for a symbol."""
-        await _cancel_all_orders_with_retry(self.exchange, symbol)
+        """Cancel every open order for a symbol — regular and algo (SL/TP)."""
+        errors: list[Exception] = []
+        for params in ({}, _ALGO):
+            try:
+                await _cancel_all_orders_with_retry(self.exchange, symbol, params)
+            except Exception as exc:
+                errors.append(exc)
+        if len(errors) == 2:
+            raise errors[0]
+        for exc in errors:
+            logger.warning(f"{symbol}: partial cancel-all failure — {exc}")
         logger.info(f"All orders cancelled: {symbol}")
 
     async def fetch_order(self, symbol: str, order_id: str) -> OrderInfo:
-        """Fetch order status by exchange ID."""
-        raw = await _fetch_order_with_retry(self.exchange, order_id, symbol)
+        """Fetch order (regular or algo) status by exchange ID."""
+        try:
+            raw = await _fetch_order_with_retry(self.exchange, order_id, symbol)
+        except ccxt.OrderNotFound:
+            raw = await _fetch_order_with_retry(self.exchange, order_id, symbol, _ALGO)
         return _parse_order(raw)
 
     async def fetch_open_orders(self, symbol: str) -> list[OrderInfo]:
-        """Return all open orders for a symbol."""
+        """Return all open orders for a symbol — regular and algo (SL/TP)."""
         raw_list = await _fetch_open_orders_with_retry(self.exchange, symbol)
+        raw_list += await _fetch_open_orders_with_retry(self.exchange, symbol, _ALGO)
         return [_parse_order(o) for o in raw_list]
 
     async def fetch_last_close_price(
@@ -373,28 +396,34 @@ async def _create_order_with_retry(
 
 @_make_retry("cancel_order")
 async def _cancel_order_with_retry(
-    exchange: ccxt.binanceusdm, order_id: str, symbol: str
+    exchange: ccxt.binanceusdm, order_id: str, symbol: str, params: dict[str, Any] | None = None
 ) -> None:
-    await exchange.cancel_order(order_id, symbol)
+    await exchange.cancel_order(order_id, symbol, params=dict(params or {}))
 
 
 @_make_retry("cancel_all_orders")
-async def _cancel_all_orders_with_retry(exchange: ccxt.binanceusdm, symbol: str) -> None:
-    await exchange.cancel_all_orders(symbol)
+async def _cancel_all_orders_with_retry(
+    exchange: ccxt.binanceusdm, symbol: str, params: dict[str, Any] | None = None
+) -> None:
+    await exchange.cancel_all_orders(symbol, params=dict(params or {}))
 
 
 @_make_retry("fetch_order")
 async def _fetch_order_with_retry(
-    exchange: ccxt.binanceusdm, order_id: str, symbol: str
+    exchange: ccxt.binanceusdm, order_id: str, symbol: str, params: dict[str, Any] | None = None
 ) -> dict[str, Any]:
-    return await exchange.fetch_order(order_id, symbol)  # type: ignore[return-value]
+    return await exchange.fetch_order(  # type: ignore[return-value]
+        order_id, symbol, params=dict(params or {})
+    )
 
 
 @_make_retry("fetch_open_orders")
 async def _fetch_open_orders_with_retry(
-    exchange: ccxt.binanceusdm, symbol: str
+    exchange: ccxt.binanceusdm, symbol: str, params: dict[str, Any] | None = None
 ) -> list[dict[str, Any]]:
-    return await exchange.fetch_open_orders(symbol)  # type: ignore[return-value]
+    return await exchange.fetch_open_orders(  # type: ignore[return-value]
+        symbol, params=dict(params or {})
+    )
 
 
 @_make_retry("fetch_my_trades")
@@ -414,6 +443,17 @@ def _make_client_order_id() -> str:
     return f"karen-{uuid.uuid4().hex[:12]}"
 
 
+def _avg_price(raw: dict[str, Any]) -> float | None:
+    """Fill price; triggered algo orders report it only as info.actualPrice."""
+    for v in (raw.get("average"), (raw.get("info") or {}).get("actualPrice")):
+        try:
+            if v and float(v) > 0:
+                return float(v)
+        except (TypeError, ValueError):
+            continue
+    return None
+
+
 def _parse_order(raw: dict[str, Any]) -> OrderInfo:
     ts_ms = raw.get("timestamp") or 0
     ts = datetime.fromtimestamp(ts_ms / 1000, tz=UTC) if ts_ms else datetime.now(tz=UTC)
@@ -431,7 +471,7 @@ def _parse_order(raw: dict[str, Any]) -> OrderInfo:
         quantity=float(raw.get("amount") or 0),
         filled=float(raw.get("filled") or 0),
         price=float(raw["price"]) if raw.get("price") else None,
-        average_price=float(raw["average"]) if raw.get("average") else None,
+        average_price=_avg_price(raw),
         stop_price=float(raw["stopPrice"]) if raw.get("stopPrice") else None,
         timestamp=ts,
     )

@@ -71,6 +71,7 @@ def _make_client(
     c.floor_qty = MagicMock(side_effect=lambda s, q: q)
     c.fetch_available_balance = AsyncMock(return_value=equity)
     c.set_leverage = AsyncMock()
+    c.fetch_last_close_price = AsyncMock(return_value=None)
     return c
 
 

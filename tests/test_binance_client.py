@@ -364,13 +364,36 @@ async def test_place_order_generates_client_order_id_if_none(
 @pytest.mark.asyncio
 async def test_cancel_order(client: BinanceClient, mock_exchange: MagicMock) -> None:
     await client.cancel_order("BTCUSDT", "999")
-    mock_exchange.cancel_order.assert_called_once_with("999", "BTCUSDT")
+    mock_exchange.cancel_order.assert_called_once_with("999", "BTCUSDT", params={})
+
+
+@pytest.mark.asyncio
+async def test_cancel_order_falls_back_to_algo(
+    client: BinanceClient, mock_exchange: MagicMock
+) -> None:
+    mock_exchange.cancel_order = AsyncMock(side_effect=[ccxt.OrderNotFound("x"), {}])
+    await client.cancel_order("BTCUSDT", "4000")
+    assert mock_exchange.cancel_order.call_args_list[-1].kwargs["params"] == {"stop": True}
+
+
+@pytest.mark.asyncio
+async def test_fetch_order_falls_back_to_algo_with_fill_price(
+    client: BinanceClient, mock_exchange: MagicMock
+) -> None:
+    algo = _order_response(oid="4000", status="closed")
+    algo["average"] = None
+    algo["info"] = {"actualPrice": "742.1"}
+    mock_exchange.fetch_order = AsyncMock(side_effect=[ccxt.OrderNotFound("x"), algo])
+    order = await client.fetch_order("ZECUSDC", "4000")
+    assert order.status == "closed"
+    assert order.average_price == pytest.approx(742.1)
 
 
 @pytest.mark.asyncio
 async def test_cancel_all_orders(client: BinanceClient, mock_exchange: MagicMock) -> None:
     await client.cancel_all_orders("ETHUSDT")
-    mock_exchange.cancel_all_orders.assert_called_once_with("ETHUSDT")
+    calls = mock_exchange.cancel_all_orders.call_args_list
+    assert [c.kwargs["params"] for c in calls] == [{}, {"stop": True}]
 
 
 # ─── fetch_order ──────────────────────────────────────────────────────────────

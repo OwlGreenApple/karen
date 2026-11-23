@@ -17,11 +17,13 @@ from karen.persistence.db import AsyncSessionLocal
 from karen.persistence.models import CloseReason, Trade, TradeSide, TradeStatus
 from karen.risk.position_sizing import (
     MARGIN_FEE_BUFFER,
+    MAX_LEVERAGE,
     MAX_SL_LOSS_PCT,
     cap_sl_to_max_loss,
     choose_leverage,
     compute_dollar_risk,
     compute_quantity_by_margin_pct,
+    fit_leverage_to_step,
     leverage_from_confidence,
     max_safe_leverage,
 )
@@ -104,6 +106,24 @@ class OrderManager:
             logger.error(f"{signal.symbol}: fetch available balance failed — {exc}")
             return None
         margin_base = min(equity, available) * MARGIN_FEE_BUFFER
+        margin = margin_base * s.position_size_pct / 100
+
+        # Lot-step rounding can drop a whole step on coarse pairs (BTC 0.001 ≈ $60):
+        # raise leverage just enough to use ~all the margin, within safe limits,
+        # then re-cap the SL so a stop-out still loses ≤ MAX_SL_LOSS_PCT of margin.
+        max_lev = min(MAX_LEVERAGE, max_safe_leverage(signal.entry_price, signal.sl_price))
+        fitted = fit_leverage_to_step(
+            margin, signal.entry_price, self._client.get_qty_step(signal.symbol),
+            leverage, max_lev,
+        )
+        if fitted != leverage:
+            new_sl = cap_sl_to_max_loss(signal.side, signal.entry_price, signal.sl_price, fitted)
+            logger.info(
+                f"{signal.symbol}: leverage {leverage}x → {fitted}x to fit lot step "
+                f"(SL {signal.sl_price:.6g} → {new_sl:.6g})"
+            )
+            leverage = fitted
+            signal.sl_price = new_sl
 
         try:
             qty = compute_quantity_by_margin_pct(
@@ -119,7 +139,7 @@ class OrderManager:
         logger.info(
             f"{signal.symbol}: confidence={signal.confidence:.2f} → leverage {leverage}x "
             f"(safe max {max_safe_leverage(signal.entry_price, signal.sl_price)}x) | "
-            f"margin=${margin_base * s.position_size_pct / 100:.2f} "
+            f"margin=${margin:.2f} "
             f"notional=${qty * signal.entry_price:.2f}"
         )
 
@@ -559,13 +579,8 @@ class OrderManager:
             return list(result.scalars().all())
 
     async def _cancel_trade_orders(self, trade: Trade) -> None:
-        """Cancel all remaining SL/TP orders for a trade."""
-        for oid in (trade.sl_order_id, trade.tp1_order_id, trade.tp2_order_id):
-            if oid:
-                try:
-                    await self._client.cancel_order(trade.symbol, oid)
-                except Exception as exc:
-                    logger.debug(f"Cancel order {oid} failed (may already be filled): {exc}")
+        """Cancel every open order on the trade's symbol (SL, TPs, stale stops)."""
+        await cancel_symbol_orders(self._client, trade)
 
     async def _persist_candles_open(self, trade: Trade) -> None:
         async with self._session_factory() as session:
@@ -619,3 +634,22 @@ def _split_tp_qty(
     if tp1 < floor or (rest > 0 and rest < floor):
         return qty, 0.0
     return tp1, (rest if has_tp2 else 0.0)
+
+
+async def cancel_symbol_orders(client: BinanceClient, trade: Trade) -> None:
+    """
+    After a position is gone, cancel ALL open orders on its symbol — regular and
+    algo — so no leftover TP/SL can hit a future position on the same coin.
+    Falls back to cancelling the trade's known order IDs one by one.
+    """
+    try:
+        await client.cancel_all_orders(trade.symbol)
+        return
+    except Exception as exc:
+        logger.warning(f"Trade #{trade.id}: cancel-all on {trade.symbol} failed — {exc}")
+    for oid in (trade.sl_order_id, trade.tp1_order_id, trade.tp2_order_id):
+        if oid:
+            try:
+                await client.cancel_order(trade.symbol, oid)
+            except Exception as exc:
+                logger.debug(f"Cancel order {oid} failed (may already be filled): {exc}")

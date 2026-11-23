@@ -20,6 +20,7 @@ import asyncio
 import contextlib
 import signal
 import sys
+import time
 from collections.abc import Callable
 from datetime import UTC, datetime
 
@@ -69,6 +70,10 @@ async def _wait_for_candle_close(interval_minutes: int) -> None:
     await asyncio.sleep(sleep_for)
 
 
+# While paused, send an open-position status update at most this often
+_POSITION_STATUS_INTERVAL_S = 3600
+
+
 # ─── Candle scan loop ─────────────────────────────────────────────────────────
 
 
@@ -85,6 +90,8 @@ async def candle_loop(
     fetches OHLCV for all symbols, runs the active strategy, and places orders.
     """
     logger.info("Candle loop started")
+    pause_notified_day = None
+    last_position_status = 0.0
     while True:
         strategy = strategy_getter()
         await _wait_for_candle_close(strategy.candle_interval_minutes)
@@ -101,7 +108,20 @@ async def candle_loop(
         if guardrails.paused:
             pct = guardrails.current_loss_pct(equity)
             logger.warning(f"Bot paused (daily loss {pct:.2f}%) — waiting for UTC day rollover")
-            await notifier.daily_loss_limit_hit(pct, equity)
+            today = datetime.now(tz=UTC).date()
+            if pause_notified_day != today:
+                # Alert once per pause, not on every candle
+                pause_notified_day = today
+                await notifier.daily_loss_limit_hit(pct, equity)
+            elif time.monotonic() - last_position_status >= _POSITION_STATUS_INTERVAL_S:
+                last_position_status = time.monotonic()
+                try:
+                    positions = await client.fetch_positions()
+                except Exception:
+                    logger.exception("Failed to fetch positions for status update")
+                    positions = []
+                if positions:
+                    await notifier.position_status(positions)
             continue
 
         strategy = strategy_getter()

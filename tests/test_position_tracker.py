@@ -31,6 +31,9 @@ def _mock_client(positions: list[PositionInfo] | None = None) -> MagicMock:
     c.fetch_positions = AsyncMock(return_value=positions or [])
     c.fetch_equity = AsyncMock(return_value=10_000.0)
     c.fetch_order = AsyncMock(return_value=_make_order(status="open"))
+    c.fetch_last_close_price = AsyncMock(return_value=None)
+    c.cancel_all_orders = AsyncMock()
+    c.cancel_order = AsyncMock()
     return c
 
 
@@ -322,3 +325,20 @@ async def test_force_snapshot_saves_to_db(default_settings, db_factory):
     assert len(snaps) == 1
     assert snaps[0].equity_usdt == pytest.approx(10_500.0)
     assert snaps[0].interval == "hourly"
+
+
+@pytest.mark.asyncio
+async def test_external_close_cancels_all_symbol_orders(default_settings, db_factory):
+    """SL/TP fill → position gone → every leftover order on the coin is cancelled."""
+    client = _mock_client(positions=[])
+    client.fetch_order = AsyncMock(return_value=_make_order(status="closed", price=39_500.0))
+    tracker = PositionTracker(client, default_settings, session_factory=db_factory)
+    trade = await _insert_trade(db_factory)
+
+    await tracker._reconcile()
+
+    client.cancel_all_orders.assert_awaited_once_with(trade.symbol)
+    async with db_factory() as session:
+        t = await session.get(Trade, trade.id)
+    assert t.status == TradeStatus.CLOSED
+    assert t.close_reason == CloseReason.STOP_LOSS

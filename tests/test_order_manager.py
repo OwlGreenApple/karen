@@ -349,10 +349,16 @@ async def test_close_position_places_market_order(order_mgr, mock_client, open_t
 async def test_close_position_cancels_sl_and_tp_orders(order_mgr, mock_client, open_trade):
     await order_mgr.close_position(open_trade, CloseReason.MANUAL, exit_price=40_000.0)
 
+    mock_client.cancel_all_orders.assert_awaited_once_with(open_trade.symbol)
+
+
+@pytest.mark.asyncio
+async def test_close_position_falls_back_to_order_ids(order_mgr, mock_client, open_trade):
+    mock_client.cancel_all_orders = AsyncMock(side_effect=Exception("boom"))
+    await order_mgr.close_position(open_trade, CloseReason.MANUAL, exit_price=40_000.0)
+
     cancelled_ids = {c.args[1] for c in mock_client.cancel_order.call_args_list}
-    assert "sl-1" in cancelled_ids
-    assert "tp1-1" in cancelled_ids
-    assert "tp2-1" in cancelled_ids
+    assert {"sl-1", "tp1-1", "tp2-1"} <= cancelled_ids
 
 
 @pytest.mark.asyncio
@@ -685,3 +691,31 @@ async def test_mr_time_stop_uses_setting(default_settings, mock_client, open_tra
         await session.commit()
     await mgr.on_closed_kline(_kl(low=39_700, high=39_900, close=39_800, tf="15m"))
     mock_client.place_order.assert_not_called()
+
+
+# ─── Lot-step leverage fitting (trade #7 regression) ──────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_open_position_bumps_leverage_to_use_full_margin(order_mgr, mock_client):
+    """$12 balance, BTC step 0.001: 10x only fits 0.001 BTC (~52% margin) → use 11x/0.002."""
+    order_mgr._settings = order_mgr._settings.model_copy(update={"position_size_pct": 100.0})
+    mock_client.get_qty_step = MagicMock(return_value=0.001)
+    mock_client.floor_qty = MagicMock(
+        side_effect=lambda s, q: round(int(q / 0.001 + 1e-9) * 0.001, 12)
+    )
+    mock_client.fetch_available_balance = AsyncMock(return_value=12.07)
+    signal = Signal(
+        symbol="BTCUSDC", side="short", strategy_mode=StrategyMode.TREND_FOLLOWING,
+        entry_price=60_688.9, sl_price=61_292.0, tp1_price=59_500.0,
+        tp1_qty_pct=0.5, tp2_price=None, atr=200.0, confidence=0.32,
+    )
+
+    trade = await order_mgr.open_position(signal, equity=12.07)
+
+    assert trade is not None
+    mock_client.set_leverage.assert_awaited_once_with("BTCUSDC", 11)
+    assert trade.leverage == 11
+    assert trade.quantity == pytest.approx(0.002)
+    # still within the 18% max-loss rule at the new leverage
+    assert (trade.sl_price - trade.entry_price) / trade.entry_price * 11 <= 0.18 + 1e-9

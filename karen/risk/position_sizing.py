@@ -123,6 +123,40 @@ def choose_leverage(confidence: float, entry_price: float, sl_price: float) -> i
     return lev if lev >= MIN_LEVERAGE else None
 
 
+# Below this share of the intended margin, lot-step rounding is "wasting" capital
+MIN_MARGIN_UTILIZATION = 0.9
+
+
+def margin_utilization(margin: float, entry_price: float, qty_step: float, leverage: int) -> float:
+    """Share of `margin` actually used once qty is floored to the exchange lot step."""
+    if margin <= 0 or entry_price <= 0 or leverage <= 0:
+        return 0.0
+    qty = margin * leverage / entry_price
+    if qty_step > 0:
+        qty = int(qty / qty_step + 1e-9) * qty_step
+    return qty * entry_price / leverage / margin
+
+
+def fit_leverage_to_step(
+    margin: float, entry_price: float, qty_step: float, leverage: int, max_leverage: int
+) -> int:
+    """
+    Coarse lot steps (e.g. BTC 0.001 ≈ $60) can leave much of a small balance unused:
+    floor(margin × lev / price) drops a whole step. Raise leverage — never above
+    `max_leverage` — to the lowest value that uses ≥ MIN_MARGIN_UTILIZATION of the
+    margin. The floored notional never exceeds margin × leverage, so the margin
+    requirement stays within `margin`. Returns `leverage` unchanged if no bump helps.
+    """
+    if qty_step <= 0:
+        return leverage
+    if margin_utilization(margin, entry_price, qty_step, leverage) >= MIN_MARGIN_UTILIZATION:
+        return leverage
+    for lev in range(leverage + 1, max_leverage + 1):
+        if margin_utilization(margin, entry_price, qty_step, lev) >= MIN_MARGIN_UTILIZATION:
+            return lev
+    return leverage
+
+
 # ─── Max loss per position ────────────────────────────────────────────────────
 
 # A stop-loss hit may lose at most this fraction of the position's margin

@@ -284,3 +284,39 @@ class TestMaxSlLoss:
         for lev in range(5, 21):
             sl = cap_sl_to_max_loss("short", 100.0, 150.0, lev)
             assert choose_leverage(1.0, 100.0, sl) is not None
+
+
+# ─── Lot-step leverage fitting ────────────────────────────────────────────────
+
+from karen.risk.position_sizing import (  # noqa: E402
+    fit_leverage_to_step,
+    margin_utilization,
+)
+
+
+class TestFitLeverageToStep:
+    # Trade #7: $11.71 margin, BTC @ 60688.9, step 0.001, 10x → only 0.001 BTC (52%)
+    def test_btc_small_balance_bumps_to_next_step(self):
+        assert margin_utilization(11.71, 60688.9, 0.001, 10) == pytest.approx(0.518, abs=0.01)
+        lev = fit_leverage_to_step(11.71, 60688.9, 0.001, 10, 20)
+        assert lev == 11
+        assert margin_utilization(11.71, 60688.9, 0.001, lev) >= 0.9
+
+    def test_never_needs_more_margin_than_available(self):
+        for lev in range(5, 21):
+            assert margin_utilization(11.71, 60688.9, 0.001, lev) <= 1.0 + 1e-9
+
+    def test_fine_step_keeps_confidence_leverage(self):
+        assert fit_leverage_to_step(11.71, 2.1, 0.1, 10, 20) == 10
+
+    def test_respects_max_leverage(self):
+        # needs 11x but cap is 10 → unchanged
+        assert fit_leverage_to_step(11.71, 60688.9, 0.001, 10, 10) == 10
+
+    def test_makes_untradeable_pair_tradeable(self):
+        # 5x → 0.00096 BTC floors to 0 → lowest leverage reaching ≥90% use is 11x
+        lev = fit_leverage_to_step(11.71, 60688.9, 0.001, 5, 20)
+        assert lev == 11
+
+    def test_unknown_step_unchanged(self):
+        assert fit_leverage_to_step(11.71, 60688.9, 0.0, 10, 20) == 10

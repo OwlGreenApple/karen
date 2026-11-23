@@ -7,6 +7,7 @@ import time
 from loguru import logger
 
 from karen.config import Settings, StrategyMode
+from karen.exchange.binance_client import PositionInfo
 from karen.persistence.models import CloseReason
 
 _PLACEHOLDER_VALUES = {"your_bot_token_here", "your_chat_id_here", "", "0"}
@@ -147,6 +148,22 @@ class TelegramNotifier:
             f"Loss: {loss_pct:.2f}% | Equity: ${equity:,.2f}\n"
             f"Bot paused until next UTC day"
         )
+
+    async def position_status(self, positions: list[PositionInfo]) -> None:
+        lines = ["📌 <b>POSISI TERBUKA</b> (bot pause — tidak entry baru)"]
+        for p in positions:
+            margin = p.notional / p.leverage if p.leverage else 0.0
+            roe = p.unrealized_pnl / margin * 100 if margin else 0.0
+            move = (p.mark_price - p.entry_price) / p.entry_price * 100 if p.entry_price else 0.0
+            if p.side == "short":
+                move = -move
+            icon = "🟢" if p.unrealized_pnl >= 0 else "🔴"
+            lines.append(
+                f"{icon} {p.symbol} {p.side.upper()} {p.leverage}x\n"
+                f"Entry: {p.entry_price:,.4f} → Mark: {p.mark_price:,.4f} ({move:+.2f}%)\n"
+                f"PnL: ${p.unrealized_pnl:+,.2f} ({roe:+.2f}% dari margin)"
+            )
+        await self._send("\n".join(lines))
 
     async def error(self, error_key: str, message: str) -> None:
         await self._send_error_throttled(error_key, f"🚨 <b>ERROR [{error_key}]</b>\n{message}")

@@ -126,6 +126,9 @@ class PositionTracker:
                 # Position gone from Binance → closed externally
                 reason = await self._determine_close_reason(trade)
                 exit_price = await self._estimate_exit_price(trade)
+                from karen.execution.order_manager import cancel_symbol_orders
+
+                await cancel_symbol_orders(self._client, trade)
                 await self._mark_trade_closed(trade, reason, exit_price)
                 logger.info(
                     f"Trade #{trade.id} detected as closed externally "
