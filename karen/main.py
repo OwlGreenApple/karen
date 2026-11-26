@@ -36,6 +36,7 @@ from karen.execution.order_manager import OrderManager
 from karen.execution.position_tracker import PositionTracker
 from karen.logging_setup import setup_logging
 from karen.notifications.telegram import TelegramNotifier
+from karen.notifications.volume_spike import VolumeSpikeMonitor
 from karen.persistence.db import init_db
 from karen.risk.guardrails import DailyGuardrails
 from karen.strategies.base import AbstractStrategy
@@ -188,6 +189,10 @@ async def run() -> None:
     notifier = TelegramNotifier(settings)
     guardrails = DailyGuardrails(settings)
 
+    # Volume spike alerts: public spot data only, runs regardless of TRADING_ENABLED
+    volume_monitor = VolumeSpikeMonitor(lambda: config_watcher.settings, notifier)
+    volume_monitor.start()
+
     async with BinanceClient(settings) as client:
         # Setup leverage/margin for all symbols
         for symbol in settings.symbol_list:
@@ -293,6 +298,7 @@ async def run() -> None:
             uvicorn_server.should_exit = True
             await asyncio.gather(scan_task, track_task, dash_task, return_exceptions=True)
             await price_feed.stop()
+            await volume_monitor.stop()
             config_watcher.stop()
             await notifier.bot_stopped()
             logger.info("Karen stopped cleanly")

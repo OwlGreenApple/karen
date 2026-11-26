@@ -94,6 +94,14 @@ class Settings(BaseSettings):
     scalp_filter_ema: int = Field(default=20, ge=5)
     scalp_5m_adx_min: float = Field(default=15.0, gt=0)
 
+    # Volume spike alerts (spot BTCUSDT) — independent of TRADING_ENABLED
+    volume_alert_enabled: bool = Field(default=True)
+    vol_spike_15m_n: int = Field(default=96, ge=10, le=998)    # baseline candles (restart)
+    vol_spike_1h_n: int = Field(default=48, ge=10, le=998)     # baseline candles (restart)
+    vol_spike_15m_mult: float = Field(default=3.0, gt=1)
+    vol_spike_1h_mult: float = Field(default=2.5, gt=1)
+    vol_spike_zscore: float = Field(default=3.0, gt=0)
+
     # Telegram
     telegram_bot_token: str = Field(default="")
     telegram_chat_id: str = Field(default="")

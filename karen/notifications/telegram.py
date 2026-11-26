@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from datetime import datetime, timedelta, timezone
 
 from loguru import logger
 
@@ -10,7 +11,10 @@ from karen.config import Settings, StrategyMode
 from karen.exchange.binance_client import PositionInfo
 from karen.persistence.models import CloseReason
 
-_PLACEHOLDER_VALUES = {"your_bot_token_here", "your_chat_id_here", "", "0"}
+# Asia/Jakarta has no DST — a fixed offset avoids needing tzdata in the container
+WIB = timezone(timedelta(hours=7), "WIB")
+
+_PLACEHOLDER_VALUES ={"your_bot_token_here", "your_chat_id_here", "", "0"}
 
 
 class TelegramNotifier:
@@ -164,6 +168,44 @@ class TelegramNotifier:
                 f"PnL: ${p.unrealized_pnl:+,.2f} ({roe:+.2f}% dari margin)"
             )
         await self._send("\n".join(lines))
+
+    async def volume_spike(
+        self,
+        symbol: str,
+        timeframe: str,
+        kind: str,
+        open_time_ms: int,
+        interval_ms: int,
+        volume: float,
+        baseline: float,
+        ratio: float,
+        zscore: float,
+        open_price: float,
+        close_price: float,
+    ) -> None:
+        fmt = "%d %b %Y %H:%M"
+        start = datetime.fromtimestamp(open_time_ms / 1000, tz=WIB)
+        end = datetime.fromtimestamp((open_time_ms + interval_ms) / 1000, tz=WIB)
+        now = datetime.now(tz=WIB)
+        change = (close_price - open_price) / open_price * 100 if open_price else 0.0
+        direction = "🟢 naik" if change >= 0 else "🔴 turun"
+        if kind == "early":
+            head = f"⚡ <b>VOLUME SPIKE — EARLY</b> ({timeframe}, candle berjalan)"
+            price_label = "Harga sekarang"
+        else:
+            head = f"📊 <b>VOLUME SPIKE — KONFIRMASI</b> ({timeframe}, candle close)"
+            price_label = "Close"
+        ratio_str = f"{ratio:.1f}x" if ratio != float("inf") else "∞"
+        await self._send(
+            f"{head}\n"
+            f"{symbol} spot\n"
+            f"Volume: {volume:,.2f} | Baseline (median): {baseline:,.2f}\n"
+            f"Rasio: <b>{ratio_str}</b> | Z-score: <b>{zscore:.2f}</b>\n"
+            f"Open: {open_price:,.2f} → {price_label}: {close_price:,.2f} "
+            f"({direction} {change:+.2f}%)\n"
+            f"Candle: {start.strftime(fmt)} – {end.strftime('%H:%M')} WIB\n"
+            f"Waktu: {now.strftime('%H:%M:%S')} WIB"
+        )
 
     async def error(self, error_key: str, message: str) -> None:
         await self._send_error_throttled(error_key, f"🚨 <b>ERROR [{error_key}]</b>\n{message}")
