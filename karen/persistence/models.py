@@ -15,6 +15,14 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
+# strategy_mode of positions found on Binance but not opened by Karen (manual trades).
+# Karen only tracks these: no SL/TP orders, no trailing, no order cancellation.
+ORPHAN_STRATEGY_MODE = "unknown"
+
+
+def is_orphan(strategy_mode: str) -> bool:
+    return strategy_mode == ORPHAN_STRATEGY_MODE
+
 
 class Base(DeclarativeBase):
     pass

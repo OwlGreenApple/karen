@@ -693,6 +693,25 @@ async def test_mr_time_stop_uses_setting(default_settings, mock_client, open_tra
     mock_client.place_order.assert_not_called()
 
 
+@pytest.mark.asyncio
+async def test_orphan_trade_is_never_trailed(order_mgr, mock_client, open_trade, db_factory):
+    """Manual positions (strategy_mode=unknown) must not get SL moves from Karen."""
+    async with db_factory() as session:
+        t = await session.get(Trade, open_trade.id)
+        t.strategy_mode = "unknown"
+        t.sl_price = 39_000.0
+        t.candles_open = 100
+        await session.commit()
+    order_mgr._kline_buffer["BTCUSDT"] = [
+        Kline("BTCUSDT", "15m", i, 40_100, 40_200, 40_100, 40_150, 100.0, True)
+        for i in range(30)
+    ]
+    await order_mgr.on_closed_kline(_kl(low=40_300, high=40_500, close=40_400, tf="15m"))
+    mock_client.place_order.assert_not_called()
+    mock_client.cancel_order.assert_not_called()
+    assert (await _load(db_factory, open_trade.id)).candles_open == 100
+
+
 # ─── Lot-step leverage fitting (trade #7 regression) ──────────────────────────
 
 

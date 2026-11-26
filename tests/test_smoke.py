@@ -154,6 +154,9 @@ async def test_startup_reconcile_creates_orphan_then_closes_on_next_cycle(
         trade = result.scalar_one()
     assert trade.status == TradeStatus.CLOSED
     assert trade.close_reason == CloseReason.MANUAL
+    # The user's own orders on a manual position are left alone
+    client.cancel_all_orders.assert_not_called()
+    client.place_order.assert_not_called()
 
 
 # ── Guardrails + order manager integration ────────────────────────────────────

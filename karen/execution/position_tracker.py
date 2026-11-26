@@ -22,12 +22,14 @@ from karen.config import Settings
 from karen.exchange.binance_client import BinanceClient, PositionInfo
 from karen.persistence.db import AsyncSessionLocal
 from karen.persistence.models import (
+    ORPHAN_STRATEGY_MODE,
     CloseReason,
     EquitySnapshot,
     Position,
     Trade,
     TradeSide,
     TradeStatus,
+    is_orphan,
 )
 
 _RECONCILE_INTERVAL = 30  # seconds
@@ -128,7 +130,9 @@ class PositionTracker:
                 exit_price = await self._estimate_exit_price(trade)
                 from karen.execution.order_manager import cancel_symbol_orders
 
-                await cancel_symbol_orders(self._client, trade)
+                # Leave the user's own orders alone on manual positions
+                if not is_orphan(trade.strategy_mode):
+                    await cancel_symbol_orders(self._client, trade)
                 await self._mark_trade_closed(trade, reason, exit_price)
                 logger.info(
                     f"Trade #{trade.id} detected as closed externally "
@@ -243,11 +247,12 @@ class PositionTracker:
         trade = Trade(
             symbol=bp.symbol,
             side=TradeSide.LONG if bp.side == "long" else TradeSide.SHORT,
-            strategy_mode="unknown",
+            strategy_mode=ORPHAN_STRATEGY_MODE,
             status=TradeStatus.OPEN,
             entry_price=bp.entry_price,
             quantity=bp.quantity,
             leverage=bp.leverage,
+            # Reference levels only (columns are NOT NULL) — no orders are placed
             sl_price=bp.entry_price * (0.98 if bp.side == "long" else 1.02),
             tp1_price=bp.entry_price * (1.02 if bp.side == "long" else 0.98),
             opened_at=datetime.now(tz=UTC),

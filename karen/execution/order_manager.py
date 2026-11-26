@@ -14,7 +14,7 @@ from karen.config import Settings
 from karen.exchange.binance_client import BinanceClient
 from karen.exchange.websocket import Kline
 from karen.persistence.db import AsyncSessionLocal
-from karen.persistence.models import CloseReason, Trade, TradeSide, TradeStatus
+from karen.persistence.models import CloseReason, Trade, TradeSide, TradeStatus, is_orphan
 from karen.risk.position_sizing import (
     MARGIN_FEE_BUFFER,
     MAX_LEVERAGE,
@@ -380,6 +380,10 @@ class OrderManager:
         open_trades = await self._get_open_trades_for_symbol(symbol)
 
         for trade in open_trades:
+            # Manual positions are the user's to manage — never move their SL
+            if is_orphan(trade.strategy_mode):
+                continue
+
             # MR breakeven: react on every closed kline (1m included) so the SL
             # moves to entry within ~1 minute of TP1 filling
             if trade.strategy_mode == "mean_reversion":
