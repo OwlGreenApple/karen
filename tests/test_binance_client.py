@@ -21,6 +21,7 @@ from karen.exchange.binance_client import (
 @pytest.fixture
 def settings() -> Settings:
     return Settings(
+        _env_file=None,
         binance_api_key="test_key",
         binance_api_secret="test_secret",
         binance_testnet=True,
@@ -93,6 +94,7 @@ async def test_connect_sets_sandbox_on_testnet(settings: Settings) -> None:
 @pytest.mark.asyncio
 async def test_connect_no_sandbox_on_live() -> None:
     s = Settings(
+        _env_file=None,
         binance_api_key="k",
         binance_api_secret="s",
         binance_testnet=False,

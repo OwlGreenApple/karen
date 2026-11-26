@@ -14,7 +14,9 @@ from karen.indicators.ta import Indicators1h, Indicators15m, Indicators5m_MR
 
 @pytest.fixture
 def default_settings() -> Settings:
+    # _env_file=None: never let the production .env leak into tests
     return Settings(
+        _env_file=None,
         binance_api_key="test",
         binance_api_secret="test",
         binance_testnet=True,
